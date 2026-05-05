@@ -38,6 +38,46 @@
     --danger-700: #B91C1C;
     --info-50: #EFF6FF;
     --info-700: #1D4ED8;
+
+    /* Mendix Atlas aliases — mapped to Amphenol brand so OOTB Mendix CSS lands cleanly */
+    --brand-primary:        var(--amph-blue);
+    --brand-primary-hover:  var(--amph-blue-800);
+    --brand-success:        var(--success-700);
+    --brand-warning:        var(--warning-700);
+    --brand-danger:         var(--danger-700);
+
+    --btn-border-width:           1px;
+    --btn-border-radius:          4px;
+    --btn-padding-y:              7px;
+    --btn-padding-x:              14px;
+    --btn-primary-bg:             var(--amph-blue);
+    --btn-primary-bg-hover:       var(--amph-blue-800);
+    --btn-primary-color:          #ffffff;
+    --btn-secondary-bg:           #ffffff;
+    --btn-secondary-bg-hover:     var(--amph-blue-25);
+    --btn-secondary-color:        var(--amph-blue);
+    --btn-secondary-border-color: var(--neutral-300);
+
+    --form-input-bg:           #ffffff;
+    --form-input-bg-hover:     var(--amph-blue-25);
+    --form-input-bg-disabled:  var(--neutral-100);
+    --form-input-border-color: var(--neutral-300);
+    --form-input-focus-color:  var(--amph-blue);
+    --form-input-focus-ring:   var(--amph-blue-50);
+    --form-input-padding-y:    8px;
+    --form-input-padding-x:    12px;
+    --form-input-border-radius: 4px;
+
+    --grid-bg-header:    var(--neutral-50);
+    --grid-bg-hover:     var(--amph-blue-25);
+    --grid-bg-selected:  var(--amph-blue-50);
+    --grid-border:       var(--neutral-200);
+    --grid-border-row:   var(--neutral-100);
+
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
   }
   html, body { height: 100%; }
   body {
@@ -57,18 +97,21 @@
   .pill-amber  { background: var(--warning-50); color: var(--warning-700); border: 1px solid var(--warning-100); }
   .pill-red    { background: var(--danger-50); color: var(--danger-700); border: 1px solid var(--danger-100); }
   .pill-info   { background: var(--info-50); color: var(--info-700); border: 1px solid var(--amph-blue-100); }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 4px; font-size: 13px; font-weight: 600; line-height: 1; transition: background-color .12s, border-color .12s; cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
-  .btn-primary { background: var(--amph-blue); color: white; border-color: var(--amph-blue); }
-  .btn-primary:hover { background: var(--amph-blue-800); border-color: var(--amph-blue-800); }
-  .btn-secondary { background: white; color: var(--amph-blue); border-color: var(--neutral-300); }
-  .btn-secondary:hover { background: var(--amph-blue-25); border-color: var(--amph-blue); }
-  .btn-tertiary { background: transparent; color: var(--neutral-700); border-color: transparent; }
-  .btn-tertiary:hover { background: var(--neutral-100); }
+  /* Mendix Atlas — buttons (.btn / .mx-button) */
+  .btn, .mx-button { display: inline-flex; align-items: center; gap: 6px; padding: var(--btn-padding-y) var(--btn-padding-x); border-radius: var(--btn-border-radius); font-size: 13px; font-weight: 600; line-height: 1; transition: background-color .12s, border-color .12s; cursor: pointer; border: var(--btn-border-width) solid transparent; white-space: nowrap; font-family: inherit; }
+  .btn-primary { background: var(--btn-primary-bg); color: var(--btn-primary-color); border-color: var(--btn-primary-bg); }
+  .btn-primary:hover { background: var(--btn-primary-bg-hover); border-color: var(--btn-primary-bg-hover); }
+  .btn-secondary, .btn-default { background: var(--btn-secondary-bg); color: var(--btn-secondary-color); border-color: var(--btn-secondary-border-color); }
+  .btn-secondary:hover, .btn-default:hover { background: var(--btn-secondary-bg-hover); border-color: var(--brand-primary); }
+  .btn-tertiary, .btn-text-only { background: transparent; color: var(--neutral-700); border-color: transparent; }
+  .btn-tertiary:hover, .btn-text-only:hover { background: var(--neutral-100); }
   .btn-danger { background: white; color: var(--danger-700); border-color: var(--neutral-300); }
   .btn-danger:hover { background: var(--danger-50); border-color: var(--danger-700); }
   .btn-warning { background: white; color: var(--warning-700); border-color: var(--neutral-300); }
   .btn-warning:hover { background: var(--warning-50); border-color: var(--warning-700); }
-  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-lg { padding: 10px 18px; font-size: 14px; }
+  .btn:disabled, .btn[disabled], .mx-button:disabled, .mx-button[disabled] { opacity: .5; cursor: not-allowed; }
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 4px; color: var(--neutral-700); font-size: 14px; font-weight: 500; }
   .nav-item:hover { background: var(--neutral-100); cursor: pointer; }
   .nav-item.active { background: var(--amph-blue-50); color: var(--amph-blue-800); font-weight: 600; }
@@ -78,15 +121,49 @@
   .field label { font-size: 12px; font-weight: 600; color: var(--neutral-700); }
   .field label.req::after { content: ' *'; color: var(--danger-700); }
   .field-readonly { padding: 8px 12px; border: 1px solid var(--neutral-200); background: var(--neutral-50); border-radius: 4px; color: var(--neutral-800); font-size: 14px; min-height: 36px; display: flex; align-items: center; }
-  .input, .select, .textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--neutral-300); background: white; border-radius: 4px; font-size: 14px; font-family: inherit; color: var(--neutral-900); }
-  .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--amph-blue); box-shadow: 0 0 0 3px var(--amph-blue-50); }
-  .checkbox { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 14px; }
-  .checkbox input { width: 16px; height: 16px; accent-color: var(--amph-blue); cursor: pointer; }
-  .table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
-  .table th { text-align: left; font-weight: 600; font-size: 12px; color: var(--neutral-700); padding: 10px 12px; background: var(--neutral-50); border-bottom: 1px solid var(--neutral-200); text-transform: uppercase; letter-spacing: 0.04em; }
-  .table td { padding: 12px; border-bottom: 1px solid var(--neutral-100); vertical-align: middle; }
-  .table tr.row-clickable:hover td { background: var(--amph-blue-25); cursor: pointer; }
-  .table tr.row-clickable:last-child td { border-bottom: none; }
+  /* Mendix Atlas — form inputs (.form-control / .input / .select / .textarea) */
+  .form-control, .input, .select, .textarea { width: 100%; padding: var(--form-input-padding-y) var(--form-input-padding-x); border: 1px solid var(--form-input-border-color); background: var(--form-input-bg); border-radius: var(--form-input-border-radius); font-size: 14px; font-family: inherit; color: var(--neutral-900); }
+  .form-control:hover, .input:hover, .select:hover, .textarea:hover { background: var(--form-input-bg-hover); }
+  .form-control:focus, .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--form-input-focus-color); box-shadow: 0 0 0 3px var(--form-input-focus-ring); background: var(--form-input-bg); }
+  .form-control[disabled], .form-control[readonly] { opacity: .6; background: var(--form-input-bg-disabled); }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group .control-label { font-size: 12px; font-weight: 600; color: var(--neutral-700); }
+  /* Mendix Atlas — checkbox (.mx-checkbox / .checkbox) */
+  .mx-checkbox, .checkbox { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 14px; }
+  .mx-checkbox input[type="checkbox"], .checkbox input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--brand-primary); cursor: pointer; margin: 0; }
+  .mx-checkbox input[type="checkbox"]:disabled, .checkbox input[type="checkbox"]:disabled { cursor: not-allowed; opacity: .4; }
+  /* Mendix Atlas — datagrid (.mx-datagrid / .table) */
+  .table, .mx-datagrid-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+  .mx-datagrid table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+  .table th, .mx-datagrid table th, .mx-datagrid-table th { text-align: left; font-weight: 600; font-size: 12px; color: var(--neutral-700); padding: 10px 12px; background: var(--grid-bg-header); border-bottom: 1px solid var(--grid-border); text-transform: uppercase; letter-spacing: 0.04em; }
+  .table td, .mx-datagrid table td, .mx-datagrid-table td { padding: 12px; border-bottom: 1px solid var(--grid-border-row); vertical-align: middle; }
+  .table tr.row-clickable:hover td, .mx-datagrid tbody tr.row-clickable:hover td { background: var(--grid-bg-hover); cursor: pointer; }
+  .table tr.row-clickable:last-child td, .mx-datagrid tbody tr.row-clickable:last-child td { border-bottom: none; }
+  .mx-datagrid tbody tr.selected td, .mx-datagrid tbody tr.selected:hover td { background: var(--grid-bg-selected); }
+  .mx-datagrid .col-select { width: 40px; padding: 10px 8px 10px 16px; }
+  .mx-datagrid .col-select input[type="checkbox"] { vertical-align: middle; }
+  /* SO line nav — left rail inside the detail page */
+  .so-line-nav { background: white; border: 1px solid var(--neutral-200); border-radius: 6px; position: sticky; top: 12px; max-height: calc(100vh - 80px); overflow-y: auto; }
+  .so-line-nav-header { padding: 12px 14px; border-bottom: 1px solid var(--neutral-200); }
+  .so-line-nav-header .eyebrow { font-size: 10px; font-weight: 700; color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.08em; }
+  .so-line-nav-header .so-id { font-size: 15px; font-weight: 700; color: var(--neutral-900); margin-top: 4px; }
+  .so-line-nav-header .so-customer { font-size: 12px; color: var(--neutral-500); margin-top: 2px; }
+  .so-line-nav-section { padding: 10px 14px 4px; font-size: 10px; font-weight: 700; color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.06em; }
+  .so-line-nav-list { padding: 0 6px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .so-line-nav-item { display: flex; flex-direction: column; gap: 3px; padding: 8px 10px; border-radius: 4px; cursor: pointer; border-left: 3px solid transparent; user-select: none; }
+  .so-line-nav-item:hover { background: var(--neutral-50); }
+  .so-line-nav-item.active { background: var(--amph-blue-25); border-left-color: var(--amph-blue); }
+  .so-line-nav-item .so-line-id { font-size: 13px; font-weight: 600; color: var(--neutral-900); display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .so-line-nav-item.active .so-line-id { color: var(--amph-blue-800); }
+  .so-line-nav-item .so-line-meta { font-size: 11px; color: var(--neutral-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .so-line-nav-item.parent { padding: 10px; }
+  .so-line-nav-item.parent .so-line-id { font-size: 14px; font-weight: 700; }
+  /* Bulk action bar — sits above the datagrid for batch operations */
+  .bulk-actions-bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--amph-blue-25); border-bottom: 1px solid var(--grid-border); font-size: 13px; }
+  .bulk-actions-bar.is-active { background: var(--amph-blue-50); }
+  .bulk-actions-bar .selection-count { font-weight: 700; color: var(--amph-blue-800); }
+  .bulk-actions-bar .selection-hint { color: var(--neutral-500); font-style: italic; }
+  .bulk-actions-bar .spacer { flex: 1; }
   /* Stepper */
   .step { display: flex; gap: 12px; padding: 4px 0 12px 0; position: relative; }
   .step:last-child { padding-bottom: 0; }
@@ -108,8 +185,10 @@
   .note-author { font-weight: 600; color: var(--neutral-700); }
   /* Top bar */
   .topbar { background: white; border-bottom: 1px solid var(--neutral-200); height: 56px; }
-  .brand { font-weight: 700; color: var(--amph-blue-800); font-size: 16px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+  .brand { font-weight: 700; color: var(--amph-blue-800); font-size: 16px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 12px; }
   .brand-mark { width: 28px; height: 28px; background: var(--amph-blue); color: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .brand-logo { height: 28px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { width: 1px; height: 24px; background: var(--neutral-300); }
   .badge-count { background: var(--amph-blue); color: white; border-radius: 999px; padding: 0 6px; font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; }
   /* Sidebar */
   .sidebar { background: white; border-right: 1px solid var(--neutral-200); width: 220px; flex-shrink: 0; padding: 16px 12px; }
@@ -225,7 +304,7 @@ const PROJECTS = [
   },
   {
     id: 'P-2', soLine: 'SO-1234-2', npsId: 'NPS-10071', route: 'NPS',
-    customer: 'Lockheed Martin', custNo: 'LM-2089', priority: 'Med', dollarValue: 86750,
+    customer: 'Boeing Defense', custNo: 'BD-0421', priority: 'Med', dollarValue: 86750,
     part: 'AFSI-D38999-26-W11SN', partDesc: 'Customized 11-pin connector w/ shell N', qty: 25,
     esd: '2026-07-08', asd: '2026-07-24',
     currentStage: 3, status: 'Assigned',
@@ -247,7 +326,7 @@ const PROJECTS = [
   },
   {
     id: 'P-3', soLine: 'SO-1234-3', npsId: null, route: null,
-    customer: 'Northrop Grumman', custNo: 'NG-4412', priority: 'Med', dollarValue: 53200,
+    customer: 'Boeing Defense', custNo: 'BD-0421', priority: 'Med', dollarValue: 53200,
     part: 'AFSI-WMS-7C', partDesc: 'Wall-mount sealed assembly', qty: 12,
     esd: '2026-07-22', asd: '2026-08-05',
     currentStage: 0, status: 'Awaiting CS routing',
@@ -259,7 +338,7 @@ const PROJECTS = [
   },
   {
     id: 'P-4', soLine: 'SO-1234-4', npsId: 'NPS-10072', route: 'NPS',
-    customer: 'Raytheon', custNo: 'RT-1109', priority: 'High', dollarValue: 198400,
+    customer: 'Boeing Defense', custNo: 'BD-0421', priority: 'High', dollarValue: 198400,
     part: 'AFSI-RTC-32X', partDesc: '32-pos rugged connector w/ EMI shroud', qty: 8,
     esd: '2026-06-30', asd: '2026-07-12',
     currentStage: 2, status: 'Cust Inquiry',
@@ -305,7 +384,7 @@ const PROJECTS = [
   },
   {
     id: 'P-6', soLine: 'SO-1235-2', npsId: 'NPS-10074', route: 'NPS',
-    customer: 'BAE Systems', custNo: 'BAE-9904', priority: 'Critical', dollarValue: 312000,
+    customer: 'L3Harris', custNo: 'L3-7762', priority: 'Critical', dollarValue: 312000,
     part: 'AFSI-Custom-RFx', partDesc: 'Custom RF assembly, gold-plated', qty: 5,
     esd: '2026-05-25', asd: '2026-06-08',
     currentStage: 7, status: 'Open',
@@ -331,6 +410,30 @@ const PROJECTS = [
       { author: 'Sarah Brown', ts: '2026-04-13 09:30', text: 'Critical priority. Confirmed with sales.' },
       { author: 'Dana Cole',   ts: '2026-05-04 09:32', text: 'Compliance docs validated. Released to PPP.' },
     ],
+  },
+  {
+    id: 'P-7', soLine: 'SO-1234-5', npsId: null, route: null,
+    customer: 'Boeing Defense', custNo: 'BD-0421', priority: 'High', dollarValue: 167300,
+    part: 'MIL-DTL-38999/24', partDesc: '6-pos circular MIL connector, plug', qty: 40,
+    esd: '2026-07-02', asd: '2026-07-16',
+    currentStage: 0, status: 'Awaiting CS routing',
+    owner: null, ownerInitials: null,
+    daysInStage: 0, ageDays: 0,
+    cs: null, ae: null, ds: null, aea: null, me: null, cm: null, ppp: null,
+    visitHistory: [],
+    notes: [],
+  },
+  {
+    id: 'P-8', soLine: 'SO-1235-3', npsId: null, route: null,
+    customer: 'L3Harris', custNo: 'L3-7762', priority: 'Med', dollarValue: 64200,
+    part: 'AFSI-Hyb-15B', partDesc: 'Hybrid power+signal, 15A, IP67', qty: 18,
+    esd: '2026-07-30', asd: '2026-08-13',
+    currentStage: 0, status: 'Awaiting CS routing',
+    owner: null, ownerInitials: null,
+    daysInStage: 0, ageDays: 0,
+    cs: null, ae: null, ds: null, aea: null, me: null, cm: null, ppp: null,
+    visitHistory: [],
+    notes: [],
   },
 ];
 
@@ -360,9 +463,11 @@ const REJECT_CODES = [
 const state = {
   view: 'grid',           // 'grid' | 'project'
   currentPersonaId: 'cs',
-  currentProjectId: null,
+  currentProjectId: null, // line item project id (null when viewing parent SO overview)
+  currentParentSoId: null,// parent SO id (e.g. 'SO-1234') — set whenever in detail view
   modal: null,            // null | { type, projectId, ... }
   projectsFilter: 'auto', // 'auto' = persona's relevant items; 'all' = all
+  selectedLineIds: new Set(), // CS bulk-route selection (project ids)
 };
 
 const $app = document.getElementById('app');
@@ -377,6 +482,26 @@ const project = () => PROJECTS.find(p => p.id === state.currentProjectId);
 const stageById = (id) => STAGES.find(s => s.id === id);
 const stageByKey = (k) => STAGES.find(s => s.key === k);
 const fmtMoney = (n) => '$' + n.toLocaleString('en-US');
+
+// Parent SO helpers — derive parent metadata from line items on the fly
+const parentSoIdOf = (prOrSoLine) => {
+  const soLine = typeof prOrSoLine === 'string' ? prOrSoLine : prOrSoLine?.soLine;
+  return soLine ? soLine.replace(/-\d+$/, '') : null;
+};
+const linesForParent = (parentSoId) => PROJECTS.filter(p => parentSoIdOf(p) === parentSoId);
+const parentSoMeta = (parentSoId) => {
+  const lines = linesForParent(parentSoId);
+  if (lines.length === 0) return null;
+  const first = lines[0];
+  return {
+    id: parentSoId,
+    customer: first.customer,
+    custNo: first.custNo,
+    lineCount: lines.length,
+    totalDollarValue: lines.reduce((sum, l) => sum + (l.dollarValue || 0), 0),
+    lines,
+  };
+};
 const fmtDate = (d) => d || '—';
 const priorityPill = (p) => {
   const map = { 'Critical': 'pill-red', 'High': 'pill-amber', 'Med': 'pill-blue', 'Low': 'pill-gray' };
@@ -461,9 +586,21 @@ function renderTopBar() {
   return `
     <header class="topbar flex items-center px-4 gap-4">
       <div class="brand">
-        <div class="brand-mark">A</div>
+        <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284 54" role="img" aria-label="Amphenol">
+          <g fill="#005CB9">
+            <path d="M9.3,42H0L15,0h10.1L40,42h-9.6l-2.7-8.7H12.2L9.3,42z M14.5,26.1h10.7L20.1,9.5h-0.1L14.5,26.1z"/>
+            <path d="M90,42h-8.3V23.1c0-4.6-2.1-6.1-4.5-6.1c-4.1,0-5.6,2.7-5.6,6.4V42h-8.3V23.2c0-2.6,0-6.3-5-6.3 c-3.9,0-5.1,2.7-5.1,6.1v19H45V10.8h7.9v4.6H53c1.1-2,3.4-5.4,8.9-5.4c4.5,0,6.6,1.6,8.7,5c1.1-1.5,3.4-5,8.4-5 C85.2,10,90,13.6,90,20.4V42z"/>
+            <path d="M105.8,15.3h0.1c1.5-2.5,3.8-5.3,9.2-5.3c6.8,0,12.8,5.3,12.8,16c0,8.5-3.8,16.7-13,16.7 c-5.7,0-7.7-3.1-8.7-4.8h-0.1V54H98V10.8h7.8V15.3z M112.9,36c5.2,0,6.7-5.7,6.7-9.4c0-4.9-1.7-9.5-6.9-9.5c-5.6,0-6.9,5-6.9,10 C105.8,31.7,107.8,36,112.9,36z"/>
+            <path d="M162,42h-8.2V23.1c0-2.3-0.1-6.1-5.3-6.1c-3.6,0-6.4,2.5-6.4,7.2V42H134V0h8.1v14.9h0.1 c1-2.6,4.5-4.9,9-4.9c6.1,0,10.8,3.6,10.8,10.4V42z"/>
+            <path d="M196.6,32.3c-2.2,7.3-8.5,9.7-13.9,9.7c-8.9,0-15.7-4.1-15.7-16.6c0-3.7,1.3-15.4,15.1-15.4 c6.2,0,14.9,2.9,14.9,16.7v1.4h-21.7c0.2,2.3,0.7,7.4,7.4,7.4c2.3,0,4.7-1.1,5.3-3.3H196.6z M188.4,23c-0.5-4.9-3.7-6.4-6.4-6.4 c-3.9,0-6,2.4-6.5,6.4H188.4z"/>
+            <path d="M232,42h-8.1V23.1c0-2.3-0.1-6.1-5.3-6.1c-3.6,0-6.4,2.5-6.4,7.2V42H204V10.8h7.8v4.6h0.1 c1.1-1.9,3.4-5.4,9.3-5.4c6.1,0,10.8,3.6,10.8,10.4V42z"/>
+            <path d="M254,42c-8.4,0-16-5-16-16c0-11,7.6-16,16-16c8.4,0,16,5,16,16C270,37,262.4,42,254,42z M254,16.7 c-6.3,0-7.5,5.4-7.5,9.3c0,3.9,1.2,9.3,7.5,9.3c6.4,0,7.5-5.4,7.5-9.3C261.5,22.1,260.4,16.7,254,16.7z"/>
+            <path d="M284,42h-8V0h8V42z"/>
+          </g>
+        </svg>
+        <div class="brand-divider"></div>
         <div class="leading-tight">
-          <div>Amphenol FSI</div>
+          <div>FSI</div>
           <div style="font-size: 11px; font-weight: 500; color: var(--neutral-500); letter-spacing: 0.04em; text-transform: uppercase;">NPS Workflow</div>
         </div>
       </div>
@@ -557,7 +694,9 @@ function bindShellEvents() {
       // Reset to grid when switching persona for cleaner demo
       state.view = 'grid';
       state.currentProjectId = null;
+      state.currentParentSoId = null;
       state.projectsFilter = 'auto';
+      state.selectedLineIds.clear();
       renderShell();
       toast(`Switched to ${persona().name} — ${persona().role}`);
     });
@@ -607,6 +746,16 @@ function renderGridView() {
       ? `${projects.length} active items across AE / DS / ME pools. Click an item to view, or open the manager workload view.`
       : `${projects.length} item${projects.length === 1 ? '' : 's'} in your stage. Click to open.`);
 
+  // Drop any selected ids that are no longer routable or no longer in view
+  const routableInView = projects.filter(pr => pr.currentStage === 0).map(pr => pr.id);
+  const routableInViewSet = new Set(routableInView);
+  for (const id of [...state.selectedLineIds]) {
+    if (!routableInViewSet.has(id)) state.selectedLineIds.delete(id);
+  }
+  const selectedCount = state.selectedLineIds.size;
+  const allRoutableSelected = routableInView.length > 0 && routableInView.every(id => state.selectedLineIds.has(id));
+  const someRoutableSelected = selectedCount > 0 && !allRoutableSelected;
+
   return `
     <div class="max-w-screen-2xl mx-auto">
       <div class="flex items-start justify-between gap-4 mb-4">
@@ -617,7 +766,7 @@ function renderGridView() {
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-2">
             <span class="text-xs text-muted">View:</span>
-            <select class="select" id="filter-toggle" style="width: auto; padding: 6px 28px 6px 10px; font-size: 13px;">
+            <select class="form-control select" id="filter-toggle" style="width: auto; padding: 6px 28px 6px 10px; font-size: 13px;">
               <option value="auto" ${state.projectsFilter === 'auto' ? 'selected' : ''}>${escapeHtml(p.isManager ? 'AE / DS / ME items' : (isCsr ? 'CS-relevant lines' : `${p.stageKey} items`))}</option>
               <option value="all"  ${state.projectsFilter === 'all'  ? 'selected' : ''}>All workflow items</option>
             </select>
@@ -626,14 +775,14 @@ function renderGridView() {
         </div>
       </div>
 
-      <div class="card mb-4">
-        <div style="padding: 10px 12px; border-bottom: 1px solid var(--neutral-200); display: flex; align-items: center; gap: 8px;">
+      <div class="card mx-datagrid mb-4">
+        <div style="padding: 10px 12px; border-bottom: 1px solid var(--grid-border); display: flex; align-items: center; gap: 8px;">
           <div class="relative flex-1 max-w-md">
             <span style="position:absolute; left:10px; top: 50%; transform: translateY(-50%); color: var(--neutral-400);">${ico('i-search','ico-sm')}</span>
-            <input class="input" id="grid-search" placeholder="Search by SO line, NPS#, customer, or part…" style="padding-left: 32px; font-size: 13px;" />
+            <input class="form-control input" id="grid-search" placeholder="Search by SO line, NPS#, customer, or part…" style="padding-left: 32px; font-size: 13px;" />
           </div>
           <span class="text-xs text-muted hidden md:inline">Filter: status</span>
-          <select class="select" style="width: auto; padding: 6px 28px 6px 10px; font-size: 13px;">
+          <select class="form-control select" style="width: auto; padding: 6px 28px 6px 10px; font-size: 13px;">
             <option>All statuses</option>
             <option>Awaiting routing</option>
             <option>Open / Assigned</option>
@@ -641,10 +790,19 @@ function renderGridView() {
             <option>Closed</option>
           </select>
         </div>
+        ${isCsr ? renderBulkActionBar(selectedCount, routableInView.length) : ''}
         <div style="overflow-x: auto;">
-          <table class="table">
+          <table class="mx-datagrid-table">
             <thead>
               <tr>
+                ${isCsr ? `<th class="col-select">
+                  <label class="mx-checkbox" title="${routableInView.length === 0 ? 'No lines awaiting CS routing' : 'Select all routable lines'}">
+                    <input type="checkbox" id="bulk-select-all"
+                      ${routableInView.length === 0 ? 'disabled' : ''}
+                      ${allRoutableSelected ? 'checked' : ''}
+                      data-indeterminate="${someRoutableSelected ? '1' : '0'}" />
+                  </label>
+                </th>` : ''}
                 <th>SO Line</th>
                 <th>Customer</th>
                 <th>Part</th>
@@ -662,7 +820,7 @@ function renderGridView() {
             </thead>
             <tbody>
               ${projects.map(pr => renderGridRow(pr, isCsr)).join('')}
-              ${projects.length === 0 ? `<tr><td colspan="13" class="p-6 text-center text-muted">No items match the current filter.</td></tr>` : ''}
+              ${projects.length === 0 ? `<tr><td colspan="${isCsr ? 14 : 13}" class="p-6 text-center text-muted">No items match the current filter.</td></tr>` : ''}
             </tbody>
           </table>
         </div>
@@ -673,13 +831,47 @@ function renderGridView() {
   `;
 }
 
+function renderBulkActionBar(selectedCount, routableCount) {
+  const hasSelection = selectedCount > 0;
+  return `
+    <div class="bulk-actions-bar ${hasSelection ? 'is-active' : ''}">
+      ${hasSelection
+        ? `<span class="selection-count">${selectedCount} selected</span>
+           <span class="text-xs text-muted">Bulk-route the selected line${selectedCount === 1 ? '' : 's'}:</span>`
+        : `<span class="selection-hint">${routableCount === 0
+            ? 'No lines awaiting CS routing — bulk routing unavailable.'
+            : `Tick rows that say "Awaiting CS routing" to enable bulk routing (${routableCount} available).`}</span>`}
+      <div class="spacer"></div>
+      <button class="btn btn-primary btn-sm" id="bulk-route-ppp" ${hasSelection ? '' : 'disabled'}>
+        ${ico('i-route','ico-sm')} Route to PPP
+      </button>
+      <button class="btn btn-secondary btn-sm" id="bulk-route-nps" ${hasSelection ? '' : 'disabled'}>
+        ${ico('i-route','ico-sm')} Route to NPS
+      </button>
+      <button class="btn btn-tertiary btn-sm" id="bulk-clear" ${hasSelection ? '' : 'disabled'}>
+        ${ico('i-x','ico-sm')} Clear
+      </button>
+    </div>
+  `;
+}
+
 function renderGridRow(pr, isCsr) {
   const showRouteBtn = isCsr && pr.currentStage === 0;
+  const isRoutable = pr.currentStage === 0;
+  const isSelected = state.selectedLineIds.has(pr.id);
   const ownerLabel = pr.owner
     ? `<div class="flex items-center gap-2"><span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background: var(--amph-blue-100); color: var(--amph-blue-800); font-weight:700; font-size:10px;">${escapeHtml(pr.ownerInitials)}</span><span>${escapeHtml(pr.owner)}</span></div>`
     : `<span class="text-muted">— Pool</span>`;
   return `
-    <tr class="row-clickable" data-project="${pr.id}">
+    <tr class="row-clickable ${isSelected ? 'selected' : ''}" data-project="${pr.id}">
+      ${isCsr ? `<td class="col-select">
+        <label class="mx-checkbox" title="${isRoutable ? 'Select for bulk routing' : 'Only lines awaiting CS routing can be bulk-routed'}">
+          <input type="checkbox" class="row-select"
+            data-row-select="${pr.id}"
+            ${isRoutable ? '' : 'disabled'}
+            ${isSelected ? 'checked' : ''} />
+        </label>
+      </td>` : ''}
       <td><span class="text-strong">${escapeHtml(pr.soLine)}</span></td>
       <td>
         <div class="text-strong">${escapeHtml(pr.customer)}</div>
@@ -700,7 +892,7 @@ function renderGridRow(pr, isCsr) {
       <td>${pr.daysInStage}d</td>
       <td class="text-right">
         ${showRouteBtn
-          ? `<button class="btn btn-primary btn-sm" data-route-now="${pr.id}" style="padding: 5px 10px; font-size: 12px;">${ico('i-route','ico-sm')} Route…</button>`
+          ? `<button class="btn btn-primary btn-sm" data-route-now="${pr.id}">${ico('i-route','ico-sm')} Route…</button>`
           : `<span class="text-muted">${ico('i-chev-right','ico-sm')}</span>`}
       </td>
     </tr>
@@ -710,10 +902,13 @@ function renderGridRow(pr, isCsr) {
 function bindGridEvents() {
   document.querySelectorAll('tr.row-clickable').forEach(row => {
     row.addEventListener('click', (e) => {
-      // Ignore clicks on the route button (handled separately)
+      // Ignore clicks on the route button or selection checkbox (handled separately)
       if (e.target.closest('[data-route-now]')) return;
+      if (e.target.closest('.col-select')) return;
       const id = row.dataset.project;
+      const pr = PROJECTS.find(p => p.id === id);
       state.currentProjectId = id;
+      state.currentParentSoId = parentSoIdOf(pr);
       state.view = 'project';
       renderShell();
     });
@@ -724,9 +919,54 @@ function bindGridEvents() {
       openModal({ type: 'route', projectId: btn.dataset.routeNow });
     });
   });
+
+  // Per-row selection checkbox
+  document.querySelectorAll('input[data-row-select]').forEach(cb => {
+    cb.addEventListener('click', (e) => e.stopPropagation());
+    cb.addEventListener('change', () => {
+      const id = cb.dataset.rowSelect;
+      if (cb.checked) state.selectedLineIds.add(id);
+      else state.selectedLineIds.delete(id);
+      renderMain();
+    });
+  });
+
+  // Header "select all routable" checkbox
+  const selectAll = document.getElementById('bulk-select-all');
+  if (selectAll) {
+    if (selectAll.dataset.indeterminate === '1') selectAll.indeterminate = true;
+    selectAll.addEventListener('click', (e) => e.stopPropagation());
+    selectAll.addEventListener('change', () => {
+      const routableIds = personaRelevantProjects()
+        .filter(pr => pr.currentStage === 0)
+        .map(pr => pr.id);
+      if (selectAll.checked) routableIds.forEach(id => state.selectedLineIds.add(id));
+      else routableIds.forEach(id => state.selectedLineIds.delete(id));
+      renderMain();
+    });
+  }
+
+  // Bulk action buttons
+  const bulkPpp = document.getElementById('bulk-route-ppp');
+  if (bulkPpp) bulkPpp.addEventListener('click', () => {
+    if (state.selectedLineIds.size === 0) return;
+    openModal({ type: 'route-bulk', preselect: 'PPP' });
+  });
+  const bulkNps = document.getElementById('bulk-route-nps');
+  if (bulkNps) bulkNps.addEventListener('click', () => {
+    if (state.selectedLineIds.size === 0) return;
+    openModal({ type: 'route-bulk', preselect: 'NPS' });
+  });
+  const bulkClear = document.getElementById('bulk-clear');
+  if (bulkClear) bulkClear.addEventListener('click', () => {
+    state.selectedLineIds.clear();
+    renderMain();
+  });
+
   const ft = document.getElementById('filter-toggle');
   if (ft) ft.addEventListener('change', () => {
     state.projectsFilter = ft.value;
+    state.selectedLineIds.clear();
     renderMain();
   });
 }
@@ -735,10 +975,20 @@ function bindGridEvents() {
 // RENDER: PROJECT WORKSPACE (PER-PERSONA)
 //============================================================
 function renderProjectView() {
+  const parentSoId = state.currentParentSoId;
+  if (!parentSoId) return '';
+  const parent = parentSoMeta(parentSoId);
+  if (!parent) return '';
+
+  // Branch: line detail vs parent overview
+  if (state.currentProjectId) return renderLineDetailView(parent);
+  return renderParentOverviewView(parent);
+}
+
+function renderLineDetailView(parent) {
   const pr = project();
   if (!pr) return '';
   const p = persona();
-  const isOwner = pr.owner === p.name;
   const editable = personaCanEdit(pr);
   const isPersonaStage = stageByKey(p.stageKey)?.id === pr.currentStage;
 
@@ -766,9 +1016,10 @@ function renderProjectView() {
 
   return `
     <div class="max-w-screen-2xl mx-auto">
-      ${renderProjectHeader(pr)}
+      ${renderProjectHeader(pr, parent)}
       ${banner ? `<div class="mb-4">${banner}</div>` : ''}
-      <div class="grid gap-4" style="grid-template-columns: minmax(0, 1fr) 360px;">
+      <div class="grid gap-4" style="grid-template-columns: 240px minmax(0, 1fr) 360px;">
+        <div class="min-w-0">${renderSoLineNav(parent, pr.id)}</div>
         <div class="space-y-4 min-w-0">
           ${renderHeaderAttrs(pr)}
           ${renderSoLineAttrs(pr)}
@@ -785,13 +1036,149 @@ function renderProjectView() {
   `;
 }
 
-function renderProjectHeader(pr) {
+function renderParentOverviewView(parent) {
+  return `
+    <div class="max-w-screen-2xl mx-auto">
+      ${renderParentHeader(parent)}
+      <div class="grid gap-4" style="grid-template-columns: 240px minmax(0, 1fr);">
+        <div class="min-w-0">${renderSoLineNav(parent, null)}</div>
+        <div class="space-y-4 min-w-0">
+          ${renderParentAttrs(parent)}
+          ${renderParentLinesTable(parent)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSoLineNav(parent, currentLineId) {
+  const isParentActive = currentLineId === null;
+  const linesHtml = parent.lines.map(pr => {
+    const active = pr.id === currentLineId;
+    const stagePillHtml = stagePill(pr);
+    return `
+      <div class="so-line-nav-item ${active ? 'active' : ''}" data-nav-line="${pr.id}">
+        <div class="so-line-id">
+          <span>${escapeHtml(pr.soLine)}</span>
+          ${stagePillHtml}
+        </div>
+        <div class="so-line-meta" title="${escapeHtml(pr.part)}">${escapeHtml(pr.part)}</div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="so-line-nav">
+      <div class="so-line-nav-header">
+        <div class="eyebrow">Sales Order</div>
+        <div class="so-id">${escapeHtml(parent.id)}</div>
+        <div class="so-customer">${escapeHtml(parent.customer)} · ${escapeHtml(parent.custNo)}</div>
+      </div>
+      <div class="so-line-nav-section">Order</div>
+      <div class="so-line-nav-list">
+        <div class="so-line-nav-item parent ${isParentActive ? 'active' : ''}" data-nav-parent>
+          <div class="so-line-id">
+            <span>${ico('i-folder','ico-sm')} Order overview</span>
+          </div>
+          <div class="so-line-meta">${parent.lineCount} line${parent.lineCount === 1 ? '' : 's'} · ${fmtMoney(parent.totalDollarValue)}</div>
+        </div>
+      </div>
+      <div class="so-line-nav-section">Line items (${parent.lineCount})</div>
+      <div class="so-line-nav-list">
+        ${linesHtml}
+      </div>
+    </div>
+  `;
+}
+
+function renderParentHeader(parent) {
+  const p = persona();
+  const queueLabel = p.stageKey === 'CS' ? 'Sales Orders' : (p.isManager ? 'Team Workload' : stageByKey(p.stageKey).name + ' Queue');
+  const statusCounts = parent.lines.reduce((acc, l) => { acc[l.status] = (acc[l.status] || 0) + 1; return acc; }, {});
+  const statusSummary = Object.entries(statusCounts).map(([s, n]) => `<span class="text-sm">${escapeHtml(s)} <span class="text-muted">×${n}</span></span>`).join('<span class="text-muted mx-2">·</span>');
   return `
     <div class="mb-4">
       <div class="flex items-center gap-2 text-xs text-muted mb-2">
-        <a class="clickable hover:text-gray-900" id="back-to-grid">${persona().stageKey === 'CS' ? 'Sales Orders' : (persona().isManager ? 'Team Workload' : stageByKey(persona().stageKey).name + ' Queue')}</a>
+        <a class="clickable hover:text-gray-900" id="back-to-grid">${escapeHtml(queueLabel)}</a>
         ${ico('i-chev-right','ico-sm')}
-        <span>${escapeHtml(pr.npsId || pr.soLine)}</span>
+        <span>${escapeHtml(parent.id)}</span>
+      </div>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold leading-tight">${escapeHtml(parent.id)} <span class="text-muted font-normal">·</span> <span class="text-muted font-medium">Order overview</span></h1>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-sm text-strong">${escapeHtml(parent.customer)}</span>
+            <span class="text-muted">·</span>
+            <span class="text-sm">${parent.lineCount} line${parent.lineCount === 1 ? '' : 's'}</span>
+            <span class="text-muted">·</span>
+            <span class="text-sm text-strong">${fmtMoney(parent.totalDollarValue)} total</span>
+          </div>
+          ${statusSummary ? `<div class="flex items-center gap-1 mt-2">${statusSummary}</div>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderParentAttrs(parent) {
+  return `
+    <div class="card">
+      <div class="card-header">SO Header attributes <span class="text-muted" style="font-size: 11px; font-weight: 500;">Read-only · sourced from Evo</span></div>
+      <div class="p-4 grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+        <div class="field"><label>Sales Order</label><div class="field-readonly">${escapeHtml(parent.id)}</div></div>
+        <div class="field"><label>Customer</label><div class="field-readonly">${escapeHtml(parent.customer)}</div></div>
+        <div class="field"><label>Customer #</label><div class="field-readonly">${escapeHtml(parent.custNo)}</div></div>
+        <div class="field"><label>Line items</label><div class="field-readonly">${parent.lineCount}</div></div>
+        <div class="field"><label>Total Dollar Value</label><div class="field-readonly">${fmtMoney(parent.totalDollarValue)}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderParentLinesTable(parent) {
+  const rows = parent.lines.map(pr => `
+    <tr class="row-clickable" data-nav-line="${pr.id}">
+      <td><span class="text-strong">${escapeHtml(pr.soLine)}</span></td>
+      <td>
+        <div>${escapeHtml(pr.part)}</div>
+        <div class="text-xs text-muted">${escapeHtml(pr.partDesc)}</div>
+      </td>
+      <td>${statusPill(pr.status)}</td>
+      <td class="text-right">${fmtMoney(pr.dollarValue)}</td>
+    </tr>
+  `).join('');
+  return `
+    <div class="card mx-datagrid">
+      <div class="card-header">Line items <span class="text-muted" style="font-size: 11px; font-weight: 500;">Click a line to open its workspace</span></div>
+      <div style="overflow-x: auto;">
+        <table class="mx-datagrid-table">
+          <thead>
+            <tr>
+              <th>SO Line</th>
+              <th>Part</th>
+              <th>Status</th>
+              <th class="text-right">$ Value</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderProjectHeader(pr, parent) {
+  const p = persona();
+  const queueLabel = p.stageKey === 'CS' ? 'Sales Orders' : (p.isManager ? 'Team Workload' : stageByKey(p.stageKey).name + ' Queue');
+  const parentId = parent ? parent.id : parentSoIdOf(pr);
+  return `
+    <div class="mb-4">
+      <div class="flex items-center gap-2 text-xs text-muted mb-2">
+        <a class="clickable hover:text-gray-900" id="back-to-grid">${escapeHtml(queueLabel)}</a>
+        ${ico('i-chev-right','ico-sm')}
+        <a class="clickable hover:text-gray-900" data-nav-parent>${escapeHtml(parentId)}</a>
+        ${ico('i-chev-right','ico-sm')}
+        <span>${escapeHtml(pr.soLine)}</span>
       </div>
       <div class="flex items-start justify-between gap-4">
         <div>
@@ -819,11 +1206,9 @@ function renderProjectHeader(pr) {
 function renderHeaderAttrs(pr) {
   return `
     <div class="card">
-      <div class="card-header">SO Header / NPS attributes <span class="text-muted" style="font-size: 11px; font-weight: 500;">Read-only · sourced from Evo</span></div>
+      <div class="card-header">SO Line / NPS attributes <span class="text-muted" style="font-size: 11px; font-weight: 500;">Read-only · sourced from Evo</span></div>
       <div class="p-4 grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
-        <div class="field"><label>Sales Order</label><div class="field-readonly">${escapeHtml(pr.soLine)}</div></div>
-        <div class="field"><label>Customer</label><div class="field-readonly">${escapeHtml(pr.customer)}</div></div>
-        <div class="field"><label>Customer #</label><div class="field-readonly">${escapeHtml(pr.custNo)}</div></div>
+        <div class="field"><label>SO Line</label><div class="field-readonly">${escapeHtml(pr.soLine)}</div></div>
         <div class="field"><label>NPS / PPP #</label><div class="field-readonly">${escapeHtml(pr.npsId || '—')}</div></div>
         <div class="field"><label>Priority</label><div class="field-readonly">${priorityPill(pr.priority)}</div></div>
         <div class="field"><label>Workflow Status</label><div class="field-readonly">${statusPill(pr.status)}</div></div>
@@ -1301,8 +1686,33 @@ function bindProjectEvents() {
   document.getElementById('back-to-grid')?.addEventListener('click', () => {
     state.view = 'grid';
     state.currentProjectId = null;
+    state.currentParentSoId = null;
     renderShell();
   });
+
+  // Rail / breadcrumb: jump to parent overview
+  document.querySelectorAll('[data-nav-parent]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      state.currentProjectId = null;
+      // currentParentSoId stays
+      renderMain();
+    });
+  });
+
+  // Rail / parent table: jump to specific line
+  document.querySelectorAll('[data-nav-line]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = el.dataset.navLine;
+      const target = PROJECTS.find(p => p.id === id);
+      if (!target) return;
+      state.currentProjectId = id;
+      state.currentParentSoId = parentSoIdOf(target);
+      renderMain();
+    });
+  });
+
   document.querySelectorAll('[data-action]').forEach(btn => {
     btn.addEventListener('click', () => handleAction(btn.dataset.action));
   });
@@ -1376,6 +1786,7 @@ function renderModal() {
   const $root = document.getElementById('modal-root');
   let html = '';
   if (m.type === 'route') html = renderRouteModal(m);
+  else if (m.type === 'route-bulk') html = renderRouteBulkModal(m);
   else if (m.type === 'hold') html = renderHoldModal(m);
   else if (m.type === 'escalate') html = renderEscalateModal(m);
   else if (m.type === 'complete') html = renderCompleteModal(m);
@@ -1416,6 +1827,33 @@ function handleModalConfirm(action) {
       closeModal();
       renderMain();
       toast(`Routed → ${route}. ${pr.npsId} created.`);
+      return;
+    }
+    case 'route-bulk': {
+      const route = document.querySelector('input[name="route-pick-bulk"]:checked')?.value;
+      if (!route) { toast('Pick a route.'); return; }
+      const note = document.getElementById('bulk-route-note')?.value?.trim();
+      const ids = [...state.selectedLineIds];
+      let routedCount = 0;
+      let nextSeq = 17500 + Math.floor(Math.random() * 200);
+      ids.forEach(id => {
+        const target = PROJECTS.find(p => p.id === id);
+        if (!target || target.currentStage !== 0) return;
+        target.route = route;
+        target.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (nextSeq++);
+        target.currentStage = route === 'PPP' ? 7 : 1;
+        target.status = 'Open';
+        target.owner = null; target.ownerInitials = null;
+        target.daysInStage = 0;
+        target.visitHistory.push({ stage: 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
+        target.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
+        target.notes.push({ author: persona().name, ts: nowStamp(), text: `Bulk-routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${note ? ' Note: ' + note : ''}` });
+        routedCount++;
+      });
+      state.selectedLineIds.clear();
+      closeModal();
+      renderMain();
+      toast(`Routed ${routedCount} line${routedCount === 1 ? '' : 's'} → ${route}.`);
       return;
     }
     case 'hold': {
@@ -1545,6 +1983,63 @@ function renderRouteModal(m) {
     <button class="btn btn-secondary" data-modal-close>Cancel</button>
     <button class="btn btn-primary" data-modal-confirm="route">${ico('i-arrow-right','ico-sm')} Confirm route</button>
   `);
+}
+
+function renderRouteBulkModal(m) {
+  const ids = [...state.selectedLineIds];
+  const lines = ids.map(id => PROJECTS.find(p => p.id === id)).filter(Boolean);
+  const preselect = m.preselect === 'PPP' ? 'PPP' : 'NPS';
+  const linesHtml = lines.map(pr => `
+    <li class="flex items-center gap-3 py-2" style="border-bottom: 1px solid var(--neutral-100);">
+      <span class="text-strong" style="min-width: 84px;">${escapeHtml(pr.soLine)}</span>
+      <span class="text-sm" style="min-width: 140px;">${escapeHtml(pr.customer)}</span>
+      <span class="text-sm text-muted flex-1">${escapeHtml(pr.part)}</span>
+      <span class="text-xs text-muted">Qty ${pr.qty}</span>
+      <span>${priorityPill(pr.priority)}</span>
+    </li>
+  `).join('');
+
+  const body = `
+    <p class="text-sm text-muted mb-3">Route <strong class="text-strong">${lines.length} selected line${lines.length === 1 ? '' : 's'}</strong> in one shot. The same path is applied to every line; each gets its own NPS / PPP number. This action is recorded in the audit log per line.</p>
+    <div class="card mb-4" style="background: var(--neutral-25); padding: 4px 12px; max-height: 180px; overflow-y: auto;">
+      <ul style="list-style: none; margin: 0; padding: 0;">${linesHtml}</ul>
+    </div>
+    <div class="space-y-2">
+      <label class="card flex items-start gap-3 p-3 clickable" style="border-width: 2px; border-color: var(--neutral-200);">
+        <input type="radio" name="route-pick-bulk" value="PPP" class="mt-1" ${preselect === 'PPP' ? 'checked' : ''} />
+        <div>
+          <div class="font-semibold">${ico('i-route','ico-sm')} PPP fast-path <span class="pill pill-green ml-2">Recommended for already-set-up parts</span></div>
+          <div class="text-sm text-muted mt-1">Skip AE / DS / ME / CM. All selected lines move directly to PPP final release.</div>
+        </div>
+      </label>
+      <label class="card flex items-start gap-3 p-3 clickable" style="border-width: 2px; border-color: var(--neutral-200);">
+        <input type="radio" name="route-pick-bulk" value="NPS" class="mt-1" ${preselect === 'NPS' ? 'checked' : ''} />
+        <div>
+          <div class="font-semibold">${ico('i-route','ico-sm')} NPS engineering path</div>
+          <div class="text-sm text-muted mt-1">Full path: AE → DS → AE Approval → ME → CM → PPP. Required when drawings or design review are needed.</div>
+        </div>
+      </label>
+    </div>
+    <div class="form-group field mt-4">
+      <label class="control-label">Closing note (optional, applied to all lines)</label>
+      <textarea id="bulk-route-note" class="form-control textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea>
+    </div>
+  `;
+  return `
+    <div class="backdrop" data-modal-close-bg>
+      <div class="modal" onclick="event.stopPropagation()" style="max-width: 640px;">
+        <div class="modal-header">
+          <h3>Route ${lines.length} selected line${lines.length === 1 ? '' : 's'}</h3>
+          <button class="btn btn-tertiary" data-modal-close>${ico('i-x','ico-sm')}</button>
+        </div>
+        <div class="modal-body">${body}</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button class="btn btn-primary" data-modal-confirm="route-bulk">${ico('i-arrow-right','ico-sm')} Confirm route</button>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderHoldModal(m) {

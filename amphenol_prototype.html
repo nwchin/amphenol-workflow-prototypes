@@ -1,0 +1,1686 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Amphenol FSI — NPS Workflow (prototype)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --amph-blue: #25509D;
+    --amph-blue-800: #1A3D77;
+    --amph-blue-700: #20448A;
+    --amph-blue-100: #C9D6EB;
+    --amph-blue-50: #E8EEF7;
+    --amph-blue-25: #F4F7FC;
+    --neutral-25: #FAFBFC;
+    --neutral-50: #F7F8FA;
+    --neutral-100: #F3F4F6;
+    --neutral-200: #E5E7EB;
+    --neutral-300: #D1D5DB;
+    --neutral-400: #9CA3AF;
+    --neutral-500: #6B7280;
+    --neutral-600: #4B5563;
+    --neutral-700: #374151;
+    --neutral-800: #1F2937;
+    --neutral-900: #111827;
+    --success-50: #F0FDF4;
+    --success-100: #DCFCE7;
+    --success-700: #15803D;
+    --warning-50: #FFFBEB;
+    --warning-100: #FEF3C7;
+    --warning-700: #B45309;
+    --danger-50: #FEF2F2;
+    --danger-100: #FEE2E2;
+    --danger-700: #B91C1C;
+    --info-50: #EFF6FF;
+    --info-700: #1D4ED8;
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--neutral-50);
+    color: var(--neutral-900);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card { background: white; border: 1px solid var(--neutral-200); border-radius: 6px; }
+  .card-header { padding: 12px 16px; border-bottom: 1px solid var(--neutral-200); font-weight: 600; font-size: 13px; color: var(--neutral-700); text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: space-between; }
+  .pill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em; white-space: nowrap; }
+  .pill-blue   { background: var(--amph-blue-50); color: var(--amph-blue-800); border: 1px solid var(--amph-blue-100); }
+  .pill-gray   { background: var(--neutral-100); color: var(--neutral-700); border: 1px solid var(--neutral-200); }
+  .pill-green  { background: var(--success-50); color: var(--success-700); border: 1px solid var(--success-100); }
+  .pill-amber  { background: var(--warning-50); color: var(--warning-700); border: 1px solid var(--warning-100); }
+  .pill-red    { background: var(--danger-50); color: var(--danger-700); border: 1px solid var(--danger-100); }
+  .pill-info   { background: var(--info-50); color: var(--info-700); border: 1px solid var(--amph-blue-100); }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 4px; font-size: 13px; font-weight: 600; line-height: 1; transition: background-color .12s, border-color .12s; cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
+  .btn-primary { background: var(--amph-blue); color: white; border-color: var(--amph-blue); }
+  .btn-primary:hover { background: var(--amph-blue-800); border-color: var(--amph-blue-800); }
+  .btn-secondary { background: white; color: var(--amph-blue); border-color: var(--neutral-300); }
+  .btn-secondary:hover { background: var(--amph-blue-25); border-color: var(--amph-blue); }
+  .btn-tertiary { background: transparent; color: var(--neutral-700); border-color: transparent; }
+  .btn-tertiary:hover { background: var(--neutral-100); }
+  .btn-danger { background: white; color: var(--danger-700); border-color: var(--neutral-300); }
+  .btn-danger:hover { background: var(--danger-50); border-color: var(--danger-700); }
+  .btn-warning { background: white; color: var(--warning-700); border-color: var(--neutral-300); }
+  .btn-warning:hover { background: var(--warning-50); border-color: var(--warning-700); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 4px; color: var(--neutral-700); font-size: 14px; font-weight: 500; }
+  .nav-item:hover { background: var(--neutral-100); cursor: pointer; }
+  .nav-item.active { background: var(--amph-blue-50); color: var(--amph-blue-800); font-weight: 600; }
+  .nav-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amph-blue); margin-left: auto; opacity: 0; }
+  .nav-item.active .dot { opacity: 1; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--neutral-700); }
+  .field label.req::after { content: ' *'; color: var(--danger-700); }
+  .field-readonly { padding: 8px 12px; border: 1px solid var(--neutral-200); background: var(--neutral-50); border-radius: 4px; color: var(--neutral-800); font-size: 14px; min-height: 36px; display: flex; align-items: center; }
+  .input, .select, .textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--neutral-300); background: white; border-radius: 4px; font-size: 14px; font-family: inherit; color: var(--neutral-900); }
+  .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--amph-blue); box-shadow: 0 0 0 3px var(--amph-blue-50); }
+  .checkbox { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 14px; }
+  .checkbox input { width: 16px; height: 16px; accent-color: var(--amph-blue); cursor: pointer; }
+  .table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+  .table th { text-align: left; font-weight: 600; font-size: 12px; color: var(--neutral-700); padding: 10px 12px; background: var(--neutral-50); border-bottom: 1px solid var(--neutral-200); text-transform: uppercase; letter-spacing: 0.04em; }
+  .table td { padding: 12px; border-bottom: 1px solid var(--neutral-100); vertical-align: middle; }
+  .table tr.row-clickable:hover td { background: var(--amph-blue-25); cursor: pointer; }
+  .table tr.row-clickable:last-child td { border-bottom: none; }
+  /* Stepper */
+  .step { display: flex; gap: 12px; padding: 4px 0 12px 0; position: relative; }
+  .step:last-child { padding-bottom: 0; }
+  .step-rail { position: relative; width: 24px; flex-shrink: 0; }
+  .step-circle { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neutral-300); background: white; font-size: 11px; font-weight: 700; color: var(--neutral-500); position: relative; z-index: 1; }
+  .step-circle.complete { background: var(--amph-blue); border-color: var(--amph-blue); color: white; }
+  .step-circle.current { border-color: var(--amph-blue); color: var(--amph-blue); background: white; }
+  .step-circle.current::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--amph-blue); }
+  .step:not(:last-child) .step-rail::after { content: ''; position: absolute; left: 11px; top: 24px; height: calc(100% + 12px); width: 2px; background: var(--neutral-200); z-index: 0; }
+  .step.complete:not(:last-child) .step-rail::after { background: var(--amph-blue); }
+  .step-body { flex: 1; padding-bottom: 4px; min-width: 0; }
+  .step-name { font-size: 13px; font-weight: 600; color: var(--neutral-700); }
+  .step.complete .step-name, .step.current .step-name { color: var(--neutral-900); }
+  .step-meta { font-size: 11px; color: var(--neutral-500); margin-top: 2px; }
+  /* Notes */
+  .note { background: var(--neutral-50); border: 1px solid var(--neutral-200); border-radius: 6px; padding: 10px 12px; }
+  .note + .note { margin-top: 8px; }
+  .note-meta { font-size: 11px; color: var(--neutral-500); display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+  .note-author { font-weight: 600; color: var(--neutral-700); }
+  /* Top bar */
+  .topbar { background: white; border-bottom: 1px solid var(--neutral-200); height: 56px; }
+  .brand { font-weight: 700; color: var(--amph-blue-800); font-size: 16px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+  .brand-mark { width: 28px; height: 28px; background: var(--amph-blue); color: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .badge-count { background: var(--amph-blue); color: white; border-radius: 999px; padding: 0 6px; font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; }
+  /* Sidebar */
+  .sidebar { background: white; border-right: 1px solid var(--neutral-200); width: 220px; flex-shrink: 0; padding: 16px 12px; }
+  .sidebar h6 { font-size: 11px; font-weight: 700; color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 12px 4px; }
+  /* Modals */
+  .backdrop { position: fixed; inset: 0; background: rgba(17,24,39,0.40); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 24px; }
+  .modal { background: white; border-radius: 8px; max-width: 520px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+  .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--neutral-200); display: flex; align-items: center; justify-content: space-between; }
+  .modal-header h3 { font-size: 16px; font-weight: 700; color: var(--neutral-900); }
+  .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+  .modal-footer { padding: 12px 20px; border-top: 1px solid var(--neutral-200); display: flex; justify-content: flex-end; gap: 8px; }
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--neutral-900); color: white; padding: 12px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; z-index: 100; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); animation: slideup .25s ease-out; max-width: 360px; }
+  @keyframes slideup { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  /* Utility */
+  .ico { width: 16px; height: 16px; flex-shrink: 0; }
+  .ico-sm { width: 14px; height: 14px; flex-shrink: 0; }
+  .ico-lg { width: 20px; height: 20px; flex-shrink: 0; }
+  .divider { height: 1px; background: var(--neutral-200); margin: 12px 0; }
+  .scroll-area { overflow-y: auto; }
+  .text-muted { color: var(--neutral-500); }
+  .text-strong { color: var(--neutral-900); font-weight: 600; }
+  .clickable { cursor: pointer; }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  .chevron { transition: transform .15s; }
+  details[open] .chevron { transform: rotate(90deg); }
+  .ban { padding: 12px 16px; border-radius: 6px; font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+  .ban-info { background: var(--info-50); border: 1px solid var(--amph-blue-100); color: var(--info-700); }
+  .ban-warn { background: var(--warning-50); border: 1px solid var(--warning-100); color: var(--warning-700); }
+  .ban-success { background: var(--success-50); border: 1px solid var(--success-100); color: var(--success-700); }
+  .ban-locked { background: var(--neutral-100); border: 1px solid var(--neutral-200); color: var(--neutral-700); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- Inline SVG icon library (avoid CDN dependency) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></symbol>
+  <symbol id="i-bar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="i-chev-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-chev-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-chev-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-paperclip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+  <symbol id="i-bom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+</svg>
+
+<script>
+//============================================================
+// MOCK DATA
+//============================================================
+const STAGES = [
+  { id: 1, key: 'CS',  name: 'Order Management',         shortName: 'Order Mgmt',     owner: 'Customer Service',         model: 'Self-Select',  ownerLabel: 'CS' },
+  { id: 2, key: 'AE',  name: 'Design Validation',        shortName: 'Design Val.',    owner: 'Application Engineering',  model: 'Assigned',     ownerLabel: 'AE' },
+  { id: 3, key: 'DS',  name: 'Drawing Services',         shortName: 'Drawings',       owner: 'Drawing Services',         model: 'Team Pool',    ownerLabel: 'DS' },
+  { id: 4, key: 'AEA', name: 'Design Approval',          shortName: 'Design Apprv.',  owner: 'Application Engineering',  model: 'Auto-routed',  ownerLabel: 'AE' },
+  { id: 5, key: 'ME',  name: 'Build Approval',           shortName: 'Build Apprv.',   owner: 'Manufacturing Eng.',       model: 'Team Pool',    ownerLabel: 'ME' },
+  { id: 6, key: 'CM',  name: 'Configuration Management', shortName: 'Config Mgmt',    owner: 'Configuration Mgmt',       model: 'Team Pool',    ownerLabel: 'CM' },
+  { id: 7, key: 'PPP', name: 'Planning, Procurement & Production Release', shortName: 'PPP', owner: 'Production Release', model: 'Team Pool', ownerLabel: 'PPP' },
+];
+
+const PERSONAS = [
+  { id: 'cs',  name: 'Sarah Brown',  role: 'Customer Service',         stageKey: 'CS',  initials: 'SB' },
+  { id: 'ae',  name: 'Mike Chen',    role: 'Application Engineer',     stageKey: 'AE',  initials: 'MC' },
+  { id: 'ds',  name: 'Lisa Park',    role: 'Drafter (DS)',             stageKey: 'DS',  initials: 'LP' },
+  { id: 'em',  name: 'Tom Reed',     role: 'Engineering Manager',      stageKey: 'EM',  initials: 'TR', isManager: true },
+  { id: 'me',  name: 'Raj Patel',    role: 'Manufacturing Engineer',   stageKey: 'ME',  initials: 'RP' },
+  { id: 'cm',  name: 'Dana Cole',    role: 'Configuration Mgmt',       stageKey: 'CM',  initials: 'DC' },
+  { id: 'ppp', name: 'Alex Morgan',  role: 'Production Release (PPP)', stageKey: 'PPP', initials: 'AM' },
+];
+
+// 6 sample projects spanning different stage states
+const PROJECTS = [
+  {
+    id: 'P-1', soLine: 'SO-1234-1', npsId: 'PPP-17302', route: 'PPP',
+    customer: 'Boeing Defense', custNo: 'BD-0421', priority: 'High', dollarValue: 142500,
+    part: 'MIL-DTL-38999/26', partDesc: '8-pos circular MIL connector', qty: 50,
+    esd: '2026-06-15', asd: '2026-06-30',
+    currentStage: 8, status: 'Closed',
+    owner: 'Alex Morgan', ownerInitials: 'AM',
+    daysInStage: 0, ageDays: 12,
+    cs: { fai: false, cui: true,  si: false, bidReview: false, status: 'Complete' },
+    ae: null, ds: null, aea: null, me: null, cm: null,
+    ppp: { initialEsd: '2026-06-15', closedAt: '2026-04-30 14:22' },
+    visitHistory: [
+      { stage: 'CS',  enteredAt: '2026-04-18 09:14', exitedAt: '2026-04-19 11:02', owner: 'Sarah Brown',  outcome: 'Complete' },
+      { stage: 'PPP', enteredAt: '2026-04-19 11:02', exitedAt: '2026-04-30 14:22', owner: 'Alex Morgan',  outcome: 'Complete' },
+    ],
+    notes: [
+      { author: 'Sarah Brown',   ts: '2026-04-18 09:30', text: 'Already in ERP. Routing direct to PPP — fast-path.' },
+      { author: 'Alex Morgan',   ts: '2026-04-30 14:22', text: 'Initial ESD established. Workflow closed.' },
+    ],
+  },
+  {
+    id: 'P-2', soLine: 'SO-1234-2', npsId: 'NPS-10071', route: 'NPS',
+    customer: 'Lockheed Martin', custNo: 'LM-2089', priority: 'Med', dollarValue: 86750,
+    part: 'AFSI-D38999-26-W11SN', partDesc: 'Customized 11-pin connector w/ shell N', qty: 25,
+    esd: '2026-07-08', asd: '2026-07-24',
+    currentStage: 3, status: 'Assigned',
+    owner: 'Lisa Park', ownerInitials: 'LP',
+    daysInStage: 2, ageDays: 9,
+    cs: { fai: true, cui: true, si: false, bidReview: false, status: 'Complete' },
+    ae: { manufacturable: 'Y', bomOk: 'Y', quoteNotes: 'Standard housing, custom keying', drawingNotes: 'Mating dwg ref AFSI-12001', testReq: 'Per MIL-PRF-39012', specs: 'Salt fog 96h', custReq: 'No alternates', status: 'Complete' },
+    ds: { drawingsCreated: true, drawingsRevised: false, buildPkgDone: false, notesCaptured: true, status: 'In progress' },
+    visitHistory: [
+      { stage: 'CS', enteredAt: '2026-04-25 10:11', exitedAt: '2026-04-25 14:30', owner: 'Sarah Brown', outcome: 'Complete' },
+      { stage: 'AE', enteredAt: '2026-04-25 14:30', exitedAt: '2026-05-01 16:08', owner: 'Mike Chen',   outcome: 'Complete' },
+      { stage: 'DS', enteredAt: '2026-05-02 08:02', exitedAt: null,                owner: 'Lisa Park',   outcome: null },
+    ],
+    notes: [
+      { author: 'Sarah Brown', ts: '2026-04-25 10:30', text: 'Customer requires expedite. ESD is firm.' },
+      { author: 'Mike Chen',   ts: '2026-04-29 13:50', text: 'Spec uplift on salt fog. Verified with Q-team.' },
+      { author: 'Lisa Park',   ts: '2026-05-03 11:20', text: 'Started drawings. ETA EOD Wed.' },
+    ],
+  },
+  {
+    id: 'P-3', soLine: 'SO-1234-3', npsId: null, route: null,
+    customer: 'Northrop Grumman', custNo: 'NG-4412', priority: 'Med', dollarValue: 53200,
+    part: 'AFSI-WMS-7C', partDesc: 'Wall-mount sealed assembly', qty: 12,
+    esd: '2026-07-22', asd: '2026-08-05',
+    currentStage: 0, status: 'Awaiting CS routing',
+    owner: null, ownerInitials: null,
+    daysInStage: 1, ageDays: 1,
+    cs: null, ae: null, ds: null, aea: null, me: null, cm: null, ppp: null,
+    visitHistory: [],
+    notes: [],
+  },
+  {
+    id: 'P-4', soLine: 'SO-1234-4', npsId: 'NPS-10072', route: 'NPS',
+    customer: 'Raytheon', custNo: 'RT-1109', priority: 'High', dollarValue: 198400,
+    part: 'AFSI-RTC-32X', partDesc: '32-pos rugged connector w/ EMI shroud', qty: 8,
+    esd: '2026-06-30', asd: '2026-07-12',
+    currentStage: 2, status: 'Cust Inquiry',
+    owner: 'Mike Chen', ownerInitials: 'MC',
+    daysInStage: 4, ageDays: 7,
+    cs: { fai: true, cui: true, si: true, bidReview: true, status: 'Complete' },
+    ae: { manufacturable: '', bomOk: '', quoteNotes: '', drawingNotes: '', testReq: '', specs: '', custReq: '', status: 'Cust Inquiry' },
+    ds: null,
+    visitHistory: [
+      { stage: 'CS', enteredAt: '2026-04-27 13:45', exitedAt: '2026-04-28 09:12', owner: 'Sarah Brown', outcome: 'Complete' },
+      { stage: 'AE', enteredAt: '2026-04-28 09:12', exitedAt: null,                owner: 'Mike Chen',   outcome: null },
+    ],
+    notes: [
+      { author: 'Sarah Brown', ts: '2026-04-27 13:50', text: 'Bid review requested. Customer specs unclear on EMI shroud type.' },
+      { author: 'Mike Chen',   ts: '2026-04-30 09:15', text: 'Sent question to customer re: shroud type. Waiting on reply.' },
+    ],
+  },
+  {
+    id: 'P-5', soLine: 'SO-1235-1', npsId: 'NPS-10073', route: 'NPS',
+    customer: 'L3Harris', custNo: 'L3-7762', priority: 'Med', dollarValue: 71800,
+    part: 'AFSI-Hyb-15A', partDesc: 'Hybrid power+signal, 15A, IP68', qty: 30,
+    esd: '2026-07-15', asd: '2026-07-29',
+    currentStage: 5, status: 'Assigned',
+    owner: 'Raj Patel', ownerInitials: 'RP',
+    daysInStage: 1, ageDays: 14,
+    cs: { fai: true, cui: false, si: false, bidReview: false, status: 'Complete' },
+    ae: { manufacturable: 'Y', bomOk: 'Y', quoteNotes: 'Hybrid pinning per cust req', drawingNotes: '—', testReq: 'IP68 verified', specs: '—', custReq: '—', status: 'Complete' },
+    ds: { drawingsCreated: true, drawingsRevised: true, buildPkgDone: true, notesCaptured: true, status: 'Complete' },
+    aea: { approved: true, approvedAt: '2026-05-02 10:14' },
+    me:  { tolerancesOk: '', toolingOk: '', materialOk: '', notes: '' },
+    visitHistory: [
+      { stage: 'CS',  enteredAt: '2026-04-20 09:05', exitedAt: '2026-04-20 12:30', owner: 'Sarah Brown', outcome: 'Complete' },
+      { stage: 'AE',  enteredAt: '2026-04-20 12:30', exitedAt: '2026-04-25 15:40', owner: 'Mike Chen',   outcome: 'Complete' },
+      { stage: 'DS',  enteredAt: '2026-04-26 08:00', exitedAt: '2026-05-01 11:10', owner: 'Lisa Park',   outcome: 'Complete' },
+      { stage: 'AEA', enteredAt: '2026-05-01 11:10', exitedAt: '2026-05-02 10:14', owner: 'Mike Chen',   outcome: 'Approve' },
+      { stage: 'ME',  enteredAt: '2026-05-02 10:14', exitedAt: null,                owner: 'Raj Patel',   outcome: null },
+    ],
+    notes: [
+      { author: 'Sarah Brown', ts: '2026-04-20 09:20', text: 'Standard pricing. No bid issues.' },
+      { author: 'Mike Chen',   ts: '2026-04-25 15:42', text: 'Validated. Pinning matches customer harness.' },
+      { author: 'Lisa Park',   ts: '2026-04-30 16:00', text: 'Drawings ready for AE approval.' },
+    ],
+  },
+  {
+    id: 'P-6', soLine: 'SO-1235-2', npsId: 'NPS-10074', route: 'NPS',
+    customer: 'BAE Systems', custNo: 'BAE-9904', priority: 'Critical', dollarValue: 312000,
+    part: 'AFSI-Custom-RFx', partDesc: 'Custom RF assembly, gold-plated', qty: 5,
+    esd: '2026-05-25', asd: '2026-06-08',
+    currentStage: 7, status: 'Open',
+    owner: null, ownerInitials: null,  // PPP pool, unclaimed
+    daysInStage: 0, ageDays: 21,
+    cs: { fai: true, cui: true, si: true, bidReview: true, status: 'Complete' },
+    ae: { manufacturable: 'Y', bomOk: 'Y', quoteNotes: 'Gold plating per cust spec', drawingNotes: '—', testReq: 'RF perf 18GHz', specs: 'Per RFx-002', custReq: 'No substitutes', status: 'Complete' },
+    ds: { drawingsCreated: true, drawingsRevised: false, buildPkgDone: true, notesCaptured: true, status: 'Complete' },
+    aea: { approved: true, approvedAt: '2026-04-28 11:00' },
+    me:  { tolerancesOk: 'Y', toolingOk: 'Y', materialOk: 'Y', notes: 'Tooling in stock', status: 'Complete' },
+    cm:  { revisionOk: 'Y', proceduresOk: 'Y', complianceOk: 'Y', status: 'Complete' },
+    ppp: { initialEsd: '', closedAt: null },
+    visitHistory: [
+      { stage: 'CS',  enteredAt: '2026-04-13 09:00', exitedAt: '2026-04-13 15:45', owner: 'Sarah Brown', outcome: 'Complete' },
+      { stage: 'AE',  enteredAt: '2026-04-13 15:45', exitedAt: '2026-04-21 10:30', owner: 'Mike Chen',   outcome: 'Complete' },
+      { stage: 'DS',  enteredAt: '2026-04-21 11:00', exitedAt: '2026-04-26 16:20', owner: 'Lisa Park',   outcome: 'Complete' },
+      { stage: 'AEA', enteredAt: '2026-04-26 16:20', exitedAt: '2026-04-28 11:00', owner: 'Mike Chen',   outcome: 'Approve' },
+      { stage: 'ME',  enteredAt: '2026-04-28 11:00', exitedAt: '2026-05-01 14:00', owner: 'Raj Patel',   outcome: 'Approve' },
+      { stage: 'CM',  enteredAt: '2026-05-01 14:00', exitedAt: '2026-05-04 09:30', owner: 'Dana Cole',   outcome: 'Complete' },
+      { stage: 'PPP', enteredAt: '2026-05-04 09:30', exitedAt: null,                owner: null,           outcome: null },
+    ],
+    notes: [
+      { author: 'Sarah Brown', ts: '2026-04-13 09:30', text: 'Critical priority. Confirmed with sales.' },
+      { author: 'Dana Cole',   ts: '2026-05-04 09:32', text: 'Compliance docs validated. Released to PPP.' },
+    ],
+  },
+];
+
+const STATUS_OPTIONS = {
+  CS:  ['Open','Cust PO Correction','Cust Inquiry','App Eng Inquiry','Waiting Bid Review','Hold','Escalated','Complete'],
+  AE:  ['Assigned','Cust Inquiry','Mfg Eng Inquiry','Design Hold','Hold','Escalated','Complete','Reject'],
+  DS:  ['Open','Assigned','In progress','Complete','Reject'],
+  AEA: ['Assigned','Approve','Reject'],
+  ME:  ['Open','Assigned','Complete','Reject'],
+  CM:  ['Open','Assigned','Complete','Reject'],
+  PPP: ['Open','Assigned','Complete'],
+};
+
+const REJECT_CODES = [
+  { code: 'RC-INC',  label: 'Incomplete information' },
+  { code: 'RC-DSGN', label: 'Design issue' },
+  { code: 'RC-DWG',  label: 'Drawing error' },
+  { code: 'RC-MFG',  label: 'Manufacturability concern' },
+  { code: 'RC-SPEC', label: 'Spec mismatch' },
+  { code: 'RC-CUST', label: 'Customer change' },
+  { code: 'RC-OTH',  label: 'Other (see notes)' },
+];
+
+//============================================================
+// STATE
+//============================================================
+const state = {
+  view: 'grid',           // 'grid' | 'project'
+  currentPersonaId: 'cs',
+  currentProjectId: null,
+  modal: null,            // null | { type, projectId, ... }
+  projectsFilter: 'auto', // 'auto' = persona's relevant items; 'all' = all
+};
+
+const $app = document.getElementById('app');
+
+//============================================================
+// HELPERS
+//============================================================
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ico = (id, cls = 'ico') => `<svg class="${cls}"><use href="#${id}"/></svg>`;
+const persona = () => PERSONAS.find(p => p.id === state.currentPersonaId);
+const project = () => PROJECTS.find(p => p.id === state.currentProjectId);
+const stageById = (id) => STAGES.find(s => s.id === id);
+const stageByKey = (k) => STAGES.find(s => s.key === k);
+const fmtMoney = (n) => '$' + n.toLocaleString('en-US');
+const fmtDate = (d) => d || '—';
+const priorityPill = (p) => {
+  const map = { 'Critical': 'pill-red', 'High': 'pill-amber', 'Med': 'pill-blue', 'Low': 'pill-gray' };
+  return `<span class="pill ${map[p] || 'pill-gray'}">${escapeHtml(p)}</span>`;
+};
+const statusPill = (s) => {
+  if (!s) return '';
+  const lower = s.toLowerCase();
+  let cls = 'pill-gray';
+  if (lower === 'closed' || lower === 'complete') cls = 'pill-green';
+  else if (lower.includes('hold') || lower.includes('pause')) cls = 'pill-amber';
+  else if (lower.includes('reject') || lower.includes('escalat')) cls = 'pill-red';
+  else if (lower.includes('inquiry') || lower.includes('correction') || lower.includes('waiting')) cls = 'pill-amber';
+  else if (lower.includes('assigned') || lower.includes('open') || lower.includes('progress') || lower.includes('approve')) cls = 'pill-blue';
+  else if (lower.includes('awaiting')) cls = 'pill-gray';
+  return `<span class="pill ${cls}">${escapeHtml(s)}</span>`;
+};
+const stagePill = (proj) => {
+  if (proj.currentStage === 0) return `<span class="pill pill-gray">— Awaiting routing</span>`;
+  if (proj.currentStage === 8) return `<span class="pill pill-green">${ico('i-check','ico-sm')} Closed</span>`;
+  const s = stageById(proj.currentStage);
+  return `<span class="pill pill-blue">S${s.id} · ${escapeHtml(s.shortName)}</span>`;
+};
+const routePill = (r) => {
+  if (r === 'PPP') return `<span class="pill pill-green">PPP fast-path</span>`;
+  if (r === 'NPS') return `<span class="pill pill-blue">NPS engineering</span>`;
+  return `<span class="pill pill-gray">— Not routed</span>`;
+};
+
+const personaCanEdit = (proj) => {
+  // EM can never edit stage forms — only reassign
+  if (persona().isManager) return false;
+  if (!proj) return false;
+  const myStage = persona().stageKey;
+  const cur = stageById(proj.currentStage);
+  if (!cur) return false;
+  // AE persona owns both S2 (Design Validation) and S4 (Design Approval)
+  if (myStage === 'AE' && (cur.key === 'AE' || cur.key === 'AEA')) return true;
+  return myStage === cur.key;
+};
+
+const personaRelevantProjects = () => {
+  const p = persona();
+  if (state.projectsFilter === 'all') return PROJECTS;
+  if (p.isManager) {
+    // Manager sees AE/DS/ME stages
+    return PROJECTS.filter(x => [2,3,4,5].includes(x.currentStage));
+  }
+  if (p.stageKey === 'CS') {
+    // CSR sees unrouted SO lines + items currently in CS
+    return PROJECTS.filter(x => x.currentStage <= 1);
+  }
+  // AE persona owns both S2 (Validation) and S4 (Design Approval)
+  if (p.stageKey === 'AE') {
+    return PROJECTS.filter(x => x.currentStage === 2 || x.currentStage === 4);
+  }
+  const stageId = stageByKey(p.stageKey)?.id;
+  return PROJECTS.filter(x => x.currentStage === stageId);
+};
+
+//============================================================
+// RENDER: APP SHELL
+//============================================================
+function renderShell() {
+  $app.innerHTML = `
+    <div class="flex flex-col min-h-screen">
+      ${renderTopBar()}
+      <div class="flex flex-1 min-h-0">
+        ${renderSidebar()}
+        <main class="flex-1 min-w-0 p-6 scroll-area" id="main"></main>
+      </div>
+    </div>
+    <div id="modal-root"></div>
+    <div id="toast-root"></div>
+  `;
+  bindShellEvents();
+  renderMain();
+}
+
+function renderTopBar() {
+  const p = persona();
+  return `
+    <header class="topbar flex items-center px-4 gap-4">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div class="leading-tight">
+          <div>Amphenol FSI</div>
+          <div style="font-size: 11px; font-weight: 500; color: var(--neutral-500); letter-spacing: 0.04em; text-transform: uppercase;">NPS Workflow</div>
+        </div>
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-2">
+        <button class="btn btn-tertiary" title="Search">${ico('i-search')}</button>
+        <button class="btn btn-tertiary relative" title="Notifications">
+          ${ico('i-bell')}
+          <span class="badge-count" style="position:absolute; top:-2px; right:-2px;">3</span>
+        </button>
+        <div class="divider" style="width: 1px; height: 24px; margin: 0 4px; background: var(--neutral-200);"></div>
+        <div class="relative" id="persona-switcher">
+          <button class="btn btn-tertiary" id="persona-btn" style="padding-right: 10px;">
+            <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background: var(--amph-blue); color: white; font-weight:700; font-size:12px;">${escapeHtml(p.initials)}</span>
+            <span class="leading-tight text-left">
+              <span style="display:block; font-weight: 600; font-size: 13px; color: var(--neutral-900);">${escapeHtml(p.name)}</span>
+              <span style="display:block; font-size: 11px; color: var(--neutral-500);">${escapeHtml(p.role)}</span>
+            </span>
+            ${ico('i-chev-down','ico-sm')}
+          </button>
+          <div id="persona-menu" class="hidden absolute right-0 mt-1 card" style="min-width: 260px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); z-index: 30;">
+            <div class="card-header" style="text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--neutral-500); font-weight: 500;">Switch persona (demo)</div>
+            <div class="p-1">
+              ${PERSONAS.map(per => `
+                <button data-persona="${per.id}" class="persona-option flex items-center gap-3 w-full px-3 py-2 rounded text-left hover:bg-gray-100 ${per.id === state.currentPersonaId ? 'bg-blue-50' : ''}" style="${per.id === state.currentPersonaId ? 'background: var(--amph-blue-50);' : ''}">
+                  <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background: ${per.id === state.currentPersonaId ? 'var(--amph-blue)' : 'var(--neutral-200)'}; color: ${per.id === state.currentPersonaId ? 'white' : 'var(--neutral-700)'}; font-weight:700; font-size:11px;">${escapeHtml(per.initials)}</span>
+                  <span class="flex-1 leading-tight">
+                    <span style="display:block; font-weight: 600; font-size: 13px;">${escapeHtml(per.name)}</span>
+                    <span style="display:block; font-size: 11px; color: var(--neutral-500);">${escapeHtml(per.role)}${per.isManager ? ' · Manager' : ''}</span>
+                  </span>
+                  ${per.id === state.currentPersonaId ? ico('i-check','ico-sm') : ''}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  `;
+}
+
+function renderSidebar() {
+  const onGrid = state.view === 'grid';
+  const personaTitle = persona().stageKey === 'CS' ? 'Sales Orders' : 'My Stage Queue';
+  return `
+    <aside class="sidebar scroll-area">
+      <h6>Workspace</h6>
+      <div class="space-y-1 mt-1">
+        <a class="nav-item ${onGrid ? 'active' : ''}" data-nav="grid">${ico('i-grid')} ${escapeHtml(personaTitle)} <span class="dot"></span></a>
+        <a class="nav-item" data-nav="my-work">${ico('i-list')} My Work</a>
+        <a class="nav-item" data-nav="projects">${ico('i-folder')} Projects</a>
+      </div>
+      <h6 style="margin-top: 16px;">Insights</h6>
+      <div class="space-y-1 mt-1">
+        <a class="nav-item" data-nav="reports">${ico('i-bar')} Reports</a>
+        <a class="nav-item" data-nav="audit">${ico('i-history')} Audit Log</a>
+      </div>
+      ${persona().isManager ? `
+        <h6 style="margin-top: 16px;">Manager</h6>
+        <div class="space-y-1 mt-1">
+          <a class="nav-item" data-nav="workload">${ico('i-bar')} Team Workload</a>
+        </div>
+      ` : ''}
+      <h6 style="margin-top: 16px;">Admin</h6>
+      <div class="space-y-1 mt-1">
+        <a class="nav-item" data-nav="admin">${ico('i-cog')} Settings</a>
+      </div>
+      <div style="margin-top: 24px; padding: 12px; background: var(--amph-blue-25); border: 1px solid var(--amph-blue-100); border-radius: 6px; font-size: 12px; color: var(--amph-blue-800);">
+        <div style="font-weight: 700; margin-bottom: 4px;">Prototype mode</div>
+        <div style="color: var(--neutral-600); font-weight: 500;">Use the persona switcher above to demo each role. State is in-memory only.</div>
+      </div>
+    </aside>
+  `;
+}
+
+function bindShellEvents() {
+  const personaBtn = document.getElementById('persona-btn');
+  const personaMenu = document.getElementById('persona-menu');
+  personaBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    personaMenu.classList.toggle('hidden');
+  });
+  document.addEventListener('click', (e) => {
+    if (!personaMenu.classList.contains('hidden') && !document.getElementById('persona-switcher').contains(e.target)) {
+      personaMenu.classList.add('hidden');
+    }
+  });
+  document.querySelectorAll('.persona-option').forEach(el => {
+    el.addEventListener('click', () => {
+      state.currentPersonaId = el.dataset.persona;
+      // Reset to grid when switching persona for cleaner demo
+      state.view = 'grid';
+      state.currentProjectId = null;
+      state.projectsFilter = 'auto';
+      renderShell();
+      toast(`Switched to ${persona().name} — ${persona().role}`);
+    });
+  });
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    el.addEventListener('click', () => {
+      const target = el.dataset.nav;
+      if (target === 'grid') {
+        state.view = 'grid';
+        state.currentProjectId = null;
+        renderShell();
+      } else {
+        toast(`"${el.textContent.trim()}" — out of scope for this prototype.`);
+      }
+    });
+  });
+}
+
+//============================================================
+// RENDER: MAIN VIEW SWITCH
+//============================================================
+function renderMain() {
+  const $main = document.getElementById('main');
+  if (state.view === 'project') {
+    $main.innerHTML = renderProjectView();
+    bindProjectEvents();
+  } else {
+    $main.innerHTML = renderGridView();
+    bindGridEvents();
+  }
+}
+
+//============================================================
+// RENDER: SALES ORDERS / PROJECTS GRID
+//============================================================
+function renderGridView() {
+  const p = persona();
+  const isCsr = p.stageKey === 'CS';
+  const projects = personaRelevantProjects();
+  const total = PROJECTS.length;
+  const headline = isCsr
+    ? 'Sales Orders'
+    : (p.isManager ? 'Team Workload' : `${stageByKey(p.stageKey).name} Queue`);
+  const subhead = isCsr
+    ? `${projects.length} of ${total} order lines awaiting routing or in CS intake. Click a line to start intake or open the project.`
+    : (p.isManager
+      ? `${projects.length} active items across AE / DS / ME pools. Click an item to view, or open the manager workload view.`
+      : `${projects.length} item${projects.length === 1 ? '' : 's'} in your stage. Click to open.`);
+
+  return `
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <h1 class="text-xl font-bold leading-tight">${escapeHtml(headline)}</h1>
+          <p class="text-sm text-muted mt-1">${escapeHtml(subhead)}</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted">View:</span>
+            <select class="select" id="filter-toggle" style="width: auto; padding: 6px 28px 6px 10px; font-size: 13px;">
+              <option value="auto" ${state.projectsFilter === 'auto' ? 'selected' : ''}>${escapeHtml(p.isManager ? 'AE / DS / ME items' : (isCsr ? 'CS-relevant lines' : `${p.stageKey} items`))}</option>
+              <option value="all"  ${state.projectsFilter === 'all'  ? 'selected' : ''}>All workflow items</option>
+            </select>
+          </div>
+          ${isCsr ? '' : `<button class="btn btn-secondary" disabled>${ico('i-bar','ico-sm')} Workload view</button>`}
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div style="padding: 10px 12px; border-bottom: 1px solid var(--neutral-200); display: flex; align-items: center; gap: 8px;">
+          <div class="relative flex-1 max-w-md">
+            <span style="position:absolute; left:10px; top: 50%; transform: translateY(-50%); color: var(--neutral-400);">${ico('i-search','ico-sm')}</span>
+            <input class="input" id="grid-search" placeholder="Search by SO line, NPS#, customer, or part…" style="padding-left: 32px; font-size: 13px;" />
+          </div>
+          <span class="text-xs text-muted hidden md:inline">Filter: status</span>
+          <select class="select" style="width: auto; padding: 6px 28px 6px 10px; font-size: 13px;">
+            <option>All statuses</option>
+            <option>Awaiting routing</option>
+            <option>Open / Assigned</option>
+            <option>Hold / Inquiry</option>
+            <option>Closed</option>
+          </select>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>SO Line</th>
+                <th>Customer</th>
+                <th>Part</th>
+                <th>Qty</th>
+                <th>ESD</th>
+                <th>Priority</th>
+                <th>Route</th>
+                <th>NPS / PPP #</th>
+                <th>Stage</th>
+                <th>Owner</th>
+                <th>Status</th>
+                <th>Days</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${projects.map(pr => renderGridRow(pr, isCsr)).join('')}
+              ${projects.length === 0 ? `<tr><td colspan="13" class="p-6 text-center text-muted">No items match the current filter.</td></tr>` : ''}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="text-xs text-muted">Showing ${projects.length} of ${total} workflow item${total === 1 ? '' : 's'}. Hover a row to see actions; click to open.</div>
+    </div>
+  `;
+}
+
+function renderGridRow(pr, isCsr) {
+  const showRouteBtn = isCsr && pr.currentStage === 0;
+  const ownerLabel = pr.owner
+    ? `<div class="flex items-center gap-2"><span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background: var(--amph-blue-100); color: var(--amph-blue-800); font-weight:700; font-size:10px;">${escapeHtml(pr.ownerInitials)}</span><span>${escapeHtml(pr.owner)}</span></div>`
+    : `<span class="text-muted">— Pool</span>`;
+  return `
+    <tr class="row-clickable" data-project="${pr.id}">
+      <td><span class="text-strong">${escapeHtml(pr.soLine)}</span></td>
+      <td>
+        <div class="text-strong">${escapeHtml(pr.customer)}</div>
+        <div class="text-xs text-muted">${escapeHtml(pr.custNo)}</div>
+      </td>
+      <td>
+        <div>${escapeHtml(pr.part)}</div>
+        <div class="text-xs text-muted">${escapeHtml(pr.partDesc)}</div>
+      </td>
+      <td>${pr.qty}</td>
+      <td>${escapeHtml(pr.esd)}</td>
+      <td>${priorityPill(pr.priority)}</td>
+      <td>${routePill(pr.route)}</td>
+      <td><span class="text-strong">${pr.npsId ? escapeHtml(pr.npsId) : '<span class="text-muted">—</span>'}</span></td>
+      <td>${stagePill(pr)}</td>
+      <td>${ownerLabel}</td>
+      <td>${statusPill(pr.status)}</td>
+      <td>${pr.daysInStage}d</td>
+      <td class="text-right">
+        ${showRouteBtn
+          ? `<button class="btn btn-primary btn-sm" data-route-now="${pr.id}" style="padding: 5px 10px; font-size: 12px;">${ico('i-route','ico-sm')} Route…</button>`
+          : `<span class="text-muted">${ico('i-chev-right','ico-sm')}</span>`}
+      </td>
+    </tr>
+  `;
+}
+
+function bindGridEvents() {
+  document.querySelectorAll('tr.row-clickable').forEach(row => {
+    row.addEventListener('click', (e) => {
+      // Ignore clicks on the route button (handled separately)
+      if (e.target.closest('[data-route-now]')) return;
+      const id = row.dataset.project;
+      state.currentProjectId = id;
+      state.view = 'project';
+      renderShell();
+    });
+  });
+  document.querySelectorAll('[data-route-now]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModal({ type: 'route', projectId: btn.dataset.routeNow });
+    });
+  });
+  const ft = document.getElementById('filter-toggle');
+  if (ft) ft.addEventListener('change', () => {
+    state.projectsFilter = ft.value;
+    renderMain();
+  });
+}
+
+//============================================================
+// RENDER: PROJECT WORKSPACE (PER-PERSONA)
+//============================================================
+function renderProjectView() {
+  const pr = project();
+  if (!pr) return '';
+  const p = persona();
+  const isOwner = pr.owner === p.name;
+  const editable = personaCanEdit(pr);
+  const isPersonaStage = stageByKey(p.stageKey)?.id === pr.currentStage;
+
+  // Banner messaging when persona doesn't match current stage
+  let banner = '';
+  if (!isPersonaStage && pr.currentStage > 0 && pr.currentStage < 8) {
+    const cur = stageById(pr.currentStage);
+    if (p.isManager) {
+      banner = `<div class="ban ban-info">${ico('i-info','ico-sm')}<div><strong>Manager view.</strong> This project is currently in <strong>${escapeHtml(cur.name)}</strong> owned by <strong>${escapeHtml(pr.owner || cur.owner + ' Pool')}</strong>. You can reassign work, but stage forms are read-only.</div></div>`;
+    } else {
+      const myStageId = stageByKey(p.stageKey)?.id;
+      if (myStageId && myStageId < pr.currentStage) {
+        banner = `<div class="ban ban-locked">${ico('i-lock','ico-sm')}<div><strong>Your stage is complete and locked.</strong> The project has moved to <strong>${escapeHtml(cur.name)}</strong>. You can view your prior input below but cannot edit.</div></div>`;
+      } else if (myStageId && myStageId > pr.currentStage) {
+        banner = `<div class="ban ban-warn">${ico('i-clock','ico-sm')}<div><strong>Awaiting upstream completion.</strong> The project is currently in <strong>${escapeHtml(cur.name)}</strong>. Your stage will activate once the upstream work is approved.</div></div>`;
+      }
+    }
+  }
+  if (pr.currentStage === 0 && p.stageKey !== 'CS') {
+    banner = `<div class="ban ban-locked">${ico('i-lock','ico-sm')}<div>This SO line has not yet been routed. Customer Service must route it before any other stage can act.</div></div>`;
+  }
+  if (pr.currentStage === 8) {
+    banner = `<div class="ban ban-success">${ico('i-check','ico-sm')}<div><strong>Workflow closed.</strong> Closed at ${escapeHtml(pr.ppp?.closedAt || '—')}. All stage data is locked for audit.</div></div>`;
+  }
+
+  return `
+    <div class="max-w-screen-2xl mx-auto">
+      ${renderProjectHeader(pr)}
+      ${banner ? `<div class="mb-4">${banner}</div>` : ''}
+      <div class="grid gap-4" style="grid-template-columns: minmax(0, 1fr) 360px;">
+        <div class="space-y-4 min-w-0">
+          ${renderHeaderAttrs(pr)}
+          ${renderSoLineAttrs(pr)}
+          ${renderPersonaWorkspace(pr, p, editable)}
+          ${renderActionsBar(pr, p, editable)}
+        </div>
+        <div class="space-y-4 min-w-0">
+          ${renderStageStepper(pr)}
+          ${renderQuickInfo(pr)}
+          ${renderNotesThread(pr)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderProjectHeader(pr) {
+  return `
+    <div class="mb-4">
+      <div class="flex items-center gap-2 text-xs text-muted mb-2">
+        <a class="clickable hover:text-gray-900" id="back-to-grid">${persona().stageKey === 'CS' ? 'Sales Orders' : (persona().isManager ? 'Team Workload' : stageByKey(persona().stageKey).name + ' Queue')}</a>
+        ${ico('i-chev-right','ico-sm')}
+        <span>${escapeHtml(pr.npsId || pr.soLine)}</span>
+      </div>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold leading-tight">${escapeHtml(pr.npsId || 'Awaiting routing')} <span class="text-muted font-normal">·</span> <span class="text-muted font-medium">${escapeHtml(pr.soLine)}</span></h1>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-sm text-strong">${escapeHtml(pr.customer)}</span>
+            <span class="text-muted">·</span>
+            <span class="text-sm">${escapeHtml(pr.part)}</span>
+            <span class="text-muted">·</span>
+            ${priorityPill(pr.priority)}
+            ${stagePill(pr)}
+            ${statusPill(pr.status)}
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="btn btn-secondary" data-action="open-bom" disabled title="Out of scope for this prototype">${ico('i-bom','ico-sm')} BOM</button>
+          <button class="btn btn-secondary" data-action="open-docs" disabled title="Out of scope for this prototype">${ico('i-doc','ico-sm')} Docs</button>
+          <button class="btn btn-secondary" data-action="copy-from" disabled title="Out of scope for this prototype">${ico('i-copy','ico-sm')} Copy from…</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderHeaderAttrs(pr) {
+  return `
+    <div class="card">
+      <div class="card-header">SO Header / NPS attributes <span class="text-muted" style="font-size: 11px; font-weight: 500;">Read-only · sourced from Evo</span></div>
+      <div class="p-4 grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+        <div class="field"><label>Sales Order</label><div class="field-readonly">${escapeHtml(pr.soLine)}</div></div>
+        <div class="field"><label>Customer</label><div class="field-readonly">${escapeHtml(pr.customer)}</div></div>
+        <div class="field"><label>Customer #</label><div class="field-readonly">${escapeHtml(pr.custNo)}</div></div>
+        <div class="field"><label>NPS / PPP #</label><div class="field-readonly">${escapeHtml(pr.npsId || '—')}</div></div>
+        <div class="field"><label>Priority</label><div class="field-readonly">${priorityPill(pr.priority)}</div></div>
+        <div class="field"><label>Workflow Status</label><div class="field-readonly">${statusPill(pr.status)}</div></div>
+        <div class="field"><label>Dollar Value</label><div class="field-readonly">${fmtMoney(pr.dollarValue)}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSoLineAttrs(pr) {
+  return `
+    <div class="card">
+      <div class="card-header">SO Line attributes <span class="text-muted" style="font-size: 11px; font-weight: 500;">Read-only · sourced from Evo</span></div>
+      <div class="p-4 grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+        <div class="field"><label>ESD (Expected Ship)</label><div class="field-readonly">${escapeHtml(pr.esd)}</div></div>
+        <div class="field"><label>ASD (Actual Ship)</label><div class="field-readonly">${escapeHtml(pr.asd)}</div></div>
+        <div class="field"><label>Part</label><div class="field-readonly">${escapeHtml(pr.part)}</div></div>
+        <div class="field"><label>Part Description</label><div class="field-readonly">${escapeHtml(pr.partDesc)}</div></div>
+        <div class="field"><label>Qty</label><div class="field-readonly">${pr.qty}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPersonaWorkspace(pr, p, editable) {
+  if (p.isManager) return renderManagerWorkspace(pr);
+  if (pr.currentStage === 0) {
+    if (p.stageKey === 'CS') return renderCsWorkspace(pr, editable);
+    return renderEmptyWorkspace('No persona workspace yet — awaiting CS routing.');
+  }
+  // AE persona has two distinct workspaces: S2 Validation form vs. S4 Approval form.
+  // Render based on the project's current stage so AE sees the right view.
+  if (p.stageKey === 'AE') {
+    const cur = stageById(pr.currentStage);
+    if (cur?.key === 'AEA') return renderAeaWorkspace(pr, editable);
+    return renderAeWorkspace(pr, editable);
+  }
+  if (p.stageKey === 'CS')  return renderCsWorkspace(pr, editable);
+  if (p.stageKey === 'DS')  return renderDsWorkspace(pr, editable);
+  if (p.stageKey === 'ME')  return renderMeWorkspace(pr, editable);
+  if (p.stageKey === 'CM')  return renderCmWorkspace(pr, editable);
+  if (p.stageKey === 'PPP') return renderPppWorkspace(pr, editable);
+  return renderEmptyWorkspace();
+}
+
+function workspaceShell(title, ownerHint, lockBadge, content) {
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span>${escapeHtml(title)}</span>
+        <span class="flex items-center gap-2">
+          ${lockBadge ? `<span class="pill pill-gray">${ico('i-lock','ico-sm')} Read-only</span>` : ''}
+          ${ownerHint ? `<span class="text-muted" style="font-size: 11px; font-weight: 500; text-transform: none; letter-spacing: 0;">${escapeHtml(ownerHint)}</span>` : ''}
+        </span>
+      </div>
+      <div class="p-4">${content}</div>
+    </div>
+  `;
+}
+
+function renderEmptyWorkspace(msg = 'No editable workspace at this stage.') {
+  return `<div class="card"><div class="p-6 text-center text-muted">${escapeHtml(msg)}</div></div>`;
+}
+
+function renderCsWorkspace(pr, editable) {
+  const cs = pr.cs || { fai: false, cui: false, si: false, bidReview: false, status: 'Open' };
+  const dis = editable ? '' : 'disabled';
+  const lock = !editable;
+  const checkRow = (key, label) => `
+    <label class="checkbox">
+      <input type="checkbox" data-cs="${key}" ${cs[key] ? 'checked' : ''} ${dis} />
+      <span><strong>${escapeHtml(label)}</strong></span>
+    </label>
+  `;
+  return workspaceShell('Order Management — CS workspace', `Stage owner: ${pr.owner || 'Unclaimed (CS pool)'}`, lock, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div>
+        <div class="text-xs font-semibold text-strong mb-2" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Intake checklist</div>
+        <div class="space-y-2">
+          ${checkRow('cui', 'CUI — Controlled Unclassified Info')}
+          ${checkRow('fai', 'FAI — First Article Inspection required')}
+          ${checkRow('si',  'SI — Source Inspection')}
+          ${checkRow('bidReview', 'Bid Review required')}
+        </div>
+      </div>
+      <div>
+        <div class="field mb-3">
+          <label class="req">Stage Status</label>
+          <select class="select" data-cs="status" ${dis}>
+            ${STATUS_OPTIONS.CS.map(s => `<option ${cs.status === s ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Intake notes (added to thread on save)</label>
+          <textarea class="textarea" rows="4" placeholder="${editable ? 'e.g., customer specs unclear, requesting clarification…' : ''}" ${dis}></textarea>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderAeWorkspace(pr, editable) {
+  const ae = pr.ae || { manufacturable: '', bomOk: '', quoteNotes: '', drawingNotes: '', testReq: '', specs: '', custReq: '', status: 'Assigned' };
+  const dis = editable ? '' : 'disabled';
+  const lock = !editable;
+  const yn = (k, label) => `
+    <div class="field">
+      <label class="req">${escapeHtml(label)}</label>
+      <select class="select" data-ae="${k}" ${dis}>
+        <option value="">—</option>
+        <option value="Y" ${ae[k]==='Y'?'selected':''}>Yes</option>
+        <option value="N" ${ae[k]==='N'?'selected':''}>No</option>
+      </select>
+    </div>
+  `;
+  const txt = (k, label, ph) => `
+    <div class="field">
+      <label>${escapeHtml(label)}</label>
+      <textarea class="textarea" rows="2" data-ae="${k}" ${dis} placeholder="${escapeHtml(ph)}">${escapeHtml(ae[k])}</textarea>
+    </div>
+  `;
+  return workspaceShell('Design Validation — AE workspace', `Assigned to: ${pr.owner || 'Unassigned'}`, lock, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div class="space-y-3">
+        <div class="text-xs font-semibold mb-1" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Validation</div>
+        ${yn('manufacturable','Design is manufacturable')}
+        ${yn('bomOk','BOM is set up correctly')}
+        <div class="field">
+          <label class="req">Stage Status</label>
+          <select class="select" data-ae="status" ${dis}>
+            ${STATUS_OPTIONS.AE.map(s => `<option ${ae.status === s ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <div class="text-xs font-semibold mb-1" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">AE Design checklist</div>
+        ${txt('quoteNotes','Quote notes','Notes for quoting / pricing')}
+        ${txt('drawingNotes','Drawing notes','Direction for the drafter')}
+        ${txt('testReq','Test requirements','Per spec, MIL-PRF, etc.')}
+        ${txt('specs','Specs / customer requirements','Tolerances, plating, etc.')}
+      </div>
+    </div>
+  `);
+}
+
+function renderDsWorkspace(pr, editable) {
+  const ds = pr.ds || { drawingsCreated: false, drawingsRevised: false, buildPkgDone: false, notesCaptured: false, status: 'Open' };
+  const dis = editable ? '' : 'disabled';
+  const lock = !editable;
+  const cb = (k, label) => `<label class="checkbox"><input type="checkbox" data-ds="${k}" ${ds[k] ? 'checked':''} ${dis}/><span>${escapeHtml(label)}</span></label>`;
+  return workspaceShell('Drawing Services — DS workspace', `Assigned to: ${pr.owner || 'Unclaimed (DS pool)'}`, lock, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div>
+        <div class="text-xs font-semibold mb-2" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Drawing checklist</div>
+        <div class="space-y-2">
+          ${cb('drawingsCreated','Drawings created')}
+          ${cb('drawingsRevised','Drawings revised based on AE feedback')}
+          ${cb('buildPkgDone','Build-package drawings complete')}
+          ${cb('notesCaptured','Q-notes / Drawing notes / Test req captured')}
+        </div>
+      </div>
+      <div>
+        <div class="field mb-3">
+          <label class="req">Stage Status</label>
+          <select class="select" data-ds="status" ${dis}>
+            ${STATUS_OPTIONS.DS.map(s => `<option ${ds.status === s ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Upload drawing files</label>
+          <button class="btn btn-secondary" ${dis}>${ico('i-paperclip','ico-sm')} Add drawing…</button>
+          <div class="text-xs text-muted mt-2">Each file is tagged with doc type and intended downstream stage on upload.</div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderAeaWorkspace(pr, editable) {
+  const aea = pr.aea || { approved: false, approvedAt: null };
+  const dis = editable ? '' : 'disabled';
+  const lock = !editable;
+  return workspaceShell('Design Approval — AE Approval workspace', `Auto-routed to: ${pr.owner || 'Original AE'}`, lock, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div class="space-y-3">
+        <div class="text-xs font-semibold mb-1" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">DS drawing package (read-only)</div>
+        <div class="field"><label>Drawing checklist</label><div class="field-readonly">${pr.ds?.notesCaptured ? 'Complete' : '—'} · created ${pr.ds?.drawingsCreated ? '✓' : '—'} · build pkg ${pr.ds?.buildPkgDone ? '✓' : '—'}</div></div>
+        <div class="field"><label>Drawing files</label><button class="btn btn-secondary" disabled>${ico('i-doc','ico-sm')} View package</button></div>
+      </div>
+      <div class="space-y-3">
+        <div class="text-xs font-semibold mb-1" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Approval sign-off</div>
+        <div class="field-readonly" style="padding: 12px;">
+          <div class="text-sm">Your name and timestamp will be stored as approval evidence on confirm. Stage data becomes immutable once you approve.</div>
+        </div>
+        <div class="field">
+          <label>Approval note (optional)</label>
+          <textarea class="textarea" rows="3" ${dis} placeholder="Optional context for the audit log"></textarea>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderMeWorkspace(pr, editable) {
+  const me = pr.me || { tolerancesOk: '', toolingOk: '', materialOk: '', notes: '' };
+  const dis = editable ? '' : 'disabled';
+  const lock = !editable;
+  const yn = (k, label) => `
+    <div class="field">
+      <label class="req">${escapeHtml(label)}</label>
+      <select class="select" data-me="${k}" ${dis}>
+        <option value="">—</option>
+        <option value="Y" ${me[k]==='Y'?'selected':''}>Yes</option>
+        <option value="N" ${me[k]==='N'?'selected':''}>No</option>
+      </select>
+    </div>
+  `;
+  return workspaceShell('Build Approval — ME workspace', `Single-claim · Owner: ${pr.owner || 'Unclaimed (ME pool)'}`, lock, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div class="space-y-3">
+        <div class="text-xs font-semibold mb-1" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Manufacturability review</div>
+        ${yn('tolerancesOk','Tolerances achievable')}
+        ${yn('toolingOk','Tooling available')}
+        ${yn('materialOk','Material lead-time acceptable')}
+      </div>
+      <div class="space-y-3">
+        <div class="field">
+          <label>Reviewer notes</label>
+          <textarea class="textarea" rows="6" data-me="notes" ${dis} placeholder="Tooling status, lead-time concerns, etc.">${escapeHtml(me.notes)}</textarea>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderCmWorkspace(pr, editable) {
+  const cm = pr.cm || { revisionOk: '', proceduresOk: '', complianceOk: '' };
+  const dis = editable ? '' : 'disabled';
+  const lock = !editable;
+  const yn = (k, label) => `
+    <div class="field">
+      <label class="req">${escapeHtml(label)}</label>
+      <select class="select" data-cm="${k}" ${dis}>
+        <option value="">—</option>
+        <option value="Y" ${cm[k]==='Y'?'selected':''}>Yes</option>
+        <option value="N" ${cm[k]==='N'?'selected':''}>No</option>
+      </select>
+    </div>
+  `;
+  return workspaceShell('Configuration Management — CM workspace', `Owner: ${pr.owner || 'Unclaimed (CM pool)'}`, lock, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div class="space-y-3">
+        <div class="text-xs font-semibold mb-1" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Release controls</div>
+        ${yn('revisionOk','Revision controls verified')}
+        ${yn('proceduresOk','Procedures followed')}
+        ${yn('complianceOk','Test / compliance controls applied')}
+      </div>
+      <div class="space-y-3">
+        <div class="field">
+          <label>Sign-off note</label>
+          <textarea class="textarea" rows="6" ${dis} placeholder="Compliance summary, exceptions, etc."></textarea>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderPppWorkspace(pr, editable) {
+  const ppp = pr.ppp || { initialEsd: '', closedAt: null };
+  const dis = editable ? '' : 'disabled';
+  const lock = !editable;
+  return workspaceShell('Final Release — PPP workspace', `Owner: ${pr.owner || 'Unclaimed (PPP pool)'}`, lock, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div class="space-y-3">
+        <div class="field">
+          <label class="req">Initial ESD (Expected Ship Date)</label>
+          <input class="input" type="date" data-ppp="initialEsd" value="${escapeHtml(ppp.initialEsd || '')}" ${dis} />
+        </div>
+        <div class="field">
+          <label>ERP / BOM signals</label>
+          <div class="field-readonly">Confirmed · ready for release</div>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <div class="field">
+          <label>Final release notes</label>
+          <textarea class="textarea" rows="5" ${dis} placeholder="Drop-ship instructions, packaging notes, etc."></textarea>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderManagerWorkspace(pr) {
+  const stage = stageById(pr.currentStage);
+  return workspaceShell('Workload — Engineering Manager view', `Project owner: ${pr.owner || (stage ? stage.owner + ' Pool' : '—')}`, true, `
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr;">
+      <div>
+        <div class="text-xs font-semibold mb-2" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Reassignment</div>
+        <div class="text-sm mb-3">EM can reassign work in <strong>AE / DS / ME</strong> stages. Other stages are self-select pools and don't need EM intervention.</div>
+        <button class="btn btn-primary" data-action="open-reassign" ${[2,3,5].includes(pr.currentStage) ? '' : 'disabled'}>${ico('i-user','ico-sm')} Reassign Item…</button>
+        ${![2,3,5].includes(pr.currentStage) ? `<div class="text-xs text-muted mt-2">Reassign disabled: current stage (${escapeHtml(stage?.name || '—')}) is not under EM scope.</div>` : ''}
+      </div>
+      <div>
+        <div class="text-xs font-semibold mb-2" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Stage health</div>
+        <div class="space-y-1 text-sm">
+          <div class="flex justify-between"><span class="text-muted">Days in current stage</span><strong>${pr.daysInStage}d</strong></div>
+          <div class="flex justify-between"><span class="text-muted">Total workflow age</span><strong>${pr.ageDays}d</strong></div>
+          <div class="flex justify-between"><span class="text-muted">Days till ESD</span><strong>${escapeHtml(daysTillEsd(pr.esd))}</strong></div>
+          <div class="flex justify-between"><span class="text-muted">Returns this item</span><strong>0</strong></div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function daysTillEsd(esd) {
+  if (!esd) return '—';
+  const d = new Date(esd + 'T00:00:00');
+  const now = new Date('2026-05-04T00:00:00');
+  const diff = Math.round((d - now) / 86400000);
+  return diff + 'd';
+}
+
+function renderActionsBar(pr, p, editable) {
+  const stage = p.stageKey;
+  if (p.isManager) return '';
+  if (pr.currentStage === 8) return '';
+  if (pr.currentStage === 0) {
+    if (stage === 'CS') {
+      return `
+        <div class="card">
+          <div class="card-header">Workflow actions</div>
+          <div class="p-4 flex flex-wrap gap-2 justify-end">
+            <button class="btn btn-secondary" data-action="add-note">${ico('i-msg','ico-sm')} Add note</button>
+            <button class="btn btn-secondary" data-action="hold">${ico('i-pause','ico-sm')} Hold</button>
+            <button class="btn btn-warning" data-action="escalate">${ico('i-warn','ico-sm')} Escalate</button>
+            <button class="btn btn-primary" data-action="route">${ico('i-route','ico-sm')} Route to…</button>
+          </div>
+        </div>
+      `;
+    }
+    return '';
+  }
+  if (!editable) {
+    return `
+      <div class="card">
+        <div class="card-header">Workflow actions</div>
+        <div class="p-4 flex flex-wrap gap-2 justify-end">
+          <button class="btn btn-tertiary" disabled>${ico('i-lock','ico-sm')} Read-only — not stage owner</button>
+        </div>
+      </div>
+    `;
+  }
+  // Primary action driven by the project's current stage (so AE sees Approve when at S4)
+  const curKey = stageById(pr.currentStage)?.key;
+  let primary = '';
+  if (curKey === 'CS')  primary = `<button class="btn btn-primary" data-action="route">${ico('i-route','ico-sm')} Route to…</button>`;
+  else if (curKey === 'AE')  primary = `<button class="btn btn-primary" data-action="complete">${ico('i-check','ico-sm')} Mark Complete</button>`;
+  else if (curKey === 'DS')  primary = `<button class="btn btn-primary" data-action="complete">${ico('i-check','ico-sm')} Mark Complete</button>`;
+  else if (curKey === 'AEA') primary = `<button class="btn btn-primary" data-action="approve">${ico('i-check','ico-sm')} Approve for Release</button>`;
+  else if (curKey === 'ME')  primary = `<button class="btn btn-primary" data-action="approve">${ico('i-check','ico-sm')} Approve Build</button>`;
+  else if (curKey === 'CM')  primary = `<button class="btn btn-primary" data-action="complete">${ico('i-check','ico-sm')} Mark Complete</button>`;
+  else if (curKey === 'PPP') primary = `<button class="btn btn-primary" data-action="close">${ico('i-check','ico-sm')} Close Workflow</button>`;
+  const showReject = ['AE','DS','AEA','ME','CM'].includes(curKey);
+  return `
+    <div class="card">
+      <div class="card-header">Workflow actions</div>
+      <div class="p-4 flex flex-wrap gap-2 justify-end">
+        <button class="btn btn-secondary" data-action="save">${ico('i-check','ico-sm')} Save</button>
+        <button class="btn btn-secondary" data-action="add-note">${ico('i-msg','ico-sm')} Add note</button>
+        <button class="btn btn-secondary" data-action="hold">${ico('i-pause','ico-sm')} Hold</button>
+        <button class="btn btn-warning" data-action="escalate">${ico('i-warn','ico-sm')} Escalate</button>
+        ${showReject ? `<button class="btn btn-danger" data-action="reject">${ico('i-x','ico-sm')} Reject</button>` : ''}
+        ${primary}
+      </div>
+    </div>
+  `;
+}
+
+//============================================================
+// RIGHT RAIL: STAGE STEPPER · QUICK INFO · NOTES
+//============================================================
+function renderStageStepper(pr) {
+  const visited = new Set(pr.visitHistory.map(v => v.stage));
+  const fastPath = pr.route === 'PPP';
+  const items = STAGES.map(s => {
+    let status = 'pending';
+    let detail = '';
+    if (pr.currentStage === 8) {
+      status = 'complete';
+    } else if (s.id < pr.currentStage) {
+      status = 'complete';
+    } else if (s.id === pr.currentStage) {
+      status = 'current';
+    } else if (fastPath && s.id > 1 && s.id < 7) {
+      status = 'skipped';
+    }
+    const visit = pr.visitHistory.find(v => v.stage === s.key);
+    if (visit) {
+      detail = visit.exitedAt
+        ? `${visit.owner} · ${visit.outcome || '—'}`
+        : `${visit.owner} · in progress`;
+    } else if (status === 'skipped') {
+      detail = 'Skipped (fast-path)';
+    } else if (status === 'current') {
+      detail = pr.owner ? `${pr.owner} · ${pr.daysInStage}d in stage` : `Pool · ${pr.daysInStage}d`;
+    }
+    return { stage: s, status, detail };
+  });
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span>${ico('i-list','ico-sm')} Stage progress</span>
+        <button class="btn btn-tertiary" data-action="audit-history" style="font-size: 11px; padding: 2px 8px;">${ico('i-history','ico-sm')} Audit history</button>
+      </div>
+      <div class="p-4">
+        ${items.map(it => `
+          <div class="step ${it.status === 'complete' ? 'complete' : it.status === 'current' ? 'current' : ''}">
+            <div class="step-rail">
+              <div class="step-circle ${it.status === 'complete' ? 'complete' : it.status === 'current' ? 'current' : it.status === 'skipped' ? '' : ''}">
+                ${it.status === 'complete' ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>` : it.stage.id}
+              </div>
+            </div>
+            <div class="step-body">
+              <div class="step-name">${escapeHtml(it.stage.shortName)}${it.status === 'skipped' ? '<span class="text-muted font-normal" style="font-size:11px;"> · skipped</span>' : ''}</div>
+              <div class="step-meta">${escapeHtml(it.detail || it.stage.owner)}</div>
+            </div>
+          </div>
+        `).join('')}
+        ${pr.route === 'PPP' ? `<div class="ban ban-info mt-3" style="font-size: 12px;">${ico('i-info','ico-sm')}<div>Fast-path: this item routes CS → PPP, skipping AE / DS / ME / CM.</div></div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderQuickInfo(pr) {
+  return `
+    <div class="card">
+      <div class="card-header">${ico('i-clock','ico-sm')} SLA & aging</div>
+      <div class="p-4 space-y-2 text-sm">
+        <div class="flex justify-between"><span class="text-muted">Total workflow age</span><strong>${pr.ageDays}d</strong></div>
+        <div class="flex justify-between"><span class="text-muted">Days in current stage</span><strong>${pr.daysInStage}d</strong></div>
+        <div class="flex justify-between"><span class="text-muted">Days till ESD</span><strong>${escapeHtml(daysTillEsd(pr.esd))}</strong></div>
+        <div class="flex justify-between"><span class="text-muted">Dollar value in process</span><strong>${fmtMoney(pr.dollarValue)}</strong></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderNotesThread(pr) {
+  return `
+    <div class="card">
+      <div class="card-header">${ico('i-msg','ico-sm')} Notes <span class="text-muted" style="font-size: 11px; font-weight: 500; text-transform: none; letter-spacing: 0;">${pr.notes.length} permanent · chat-style</span></div>
+      <div class="p-3" style="max-height: 320px; overflow-y: auto;">
+        ${pr.notes.length === 0 ? `<div class="text-center text-muted text-sm py-4">No notes yet.</div>` : pr.notes.map(n => `
+          <div class="note">
+            <div class="note-meta"><span class="note-author">${escapeHtml(n.author)}</span><span>·</span><span>${escapeHtml(n.ts)}</span></div>
+            <div class="text-sm">${escapeHtml(n.text)}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="p-3 border-t" style="border-color: var(--neutral-200);">
+        <div class="flex gap-2 items-end">
+          <textarea class="textarea" id="note-input" rows="2" placeholder="Add a permanent note…" style="font-size: 13px;"></textarea>
+          <button class="btn btn-primary" id="note-send" style="height: 36px;">Post</button>
+        </div>
+        <div class="text-xs text-muted mt-2">Notes are immutable once posted (per Anthony's audit requirements).</div>
+      </div>
+    </div>
+  `;
+}
+
+function bindProjectEvents() {
+  document.getElementById('back-to-grid')?.addEventListener('click', () => {
+    state.view = 'grid';
+    state.currentProjectId = null;
+    renderShell();
+  });
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => handleAction(btn.dataset.action));
+  });
+  const noteSend = document.getElementById('note-send');
+  if (noteSend) noteSend.addEventListener('click', () => {
+    const txt = document.getElementById('note-input').value.trim();
+    if (!txt) return;
+    const pr = project();
+    pr.notes.push({ author: persona().name, ts: new Date().toISOString().slice(0,16).replace('T',' '), text: txt });
+    renderMain();
+    toast('Note posted (immutable).');
+  });
+}
+
+//============================================================
+// ACTIONS
+//============================================================
+function handleAction(act) {
+  const pr = project();
+  if (!pr) return;
+  switch (act) {
+    case 'save':
+      toast('Changes saved. Stage Visit remains open.');
+      break;
+    case 'add-note':
+      document.getElementById('note-input')?.focus();
+      break;
+    case 'hold':
+      openModal({ type: 'hold', projectId: pr.id });
+      break;
+    case 'escalate':
+      openModal({ type: 'escalate', projectId: pr.id });
+      break;
+    case 'route':
+      openModal({ type: 'route', projectId: pr.id });
+      break;
+    case 'complete':
+    case 'approve':
+    case 'close':
+      openModal({ type: 'complete', projectId: pr.id, label: act });
+      break;
+    case 'reject':
+      openModal({ type: 'reject', projectId: pr.id });
+      break;
+    case 'audit-history':
+      openModal({ type: 'audit', projectId: pr.id });
+      break;
+    case 'open-reassign':
+      openModal({ type: 'reassign', projectId: pr.id });
+      break;
+    default:
+      toast(`Action "${act}" — not yet wired in this prototype.`);
+  }
+}
+
+//============================================================
+// MODALS
+//============================================================
+function openModal(m) {
+  state.modal = m;
+  renderModal();
+}
+function closeModal() {
+  state.modal = null;
+  document.getElementById('modal-root').innerHTML = '';
+}
+
+function renderModal() {
+  const m = state.modal;
+  if (!m) return;
+  const $root = document.getElementById('modal-root');
+  let html = '';
+  if (m.type === 'route') html = renderRouteModal(m);
+  else if (m.type === 'hold') html = renderHoldModal(m);
+  else if (m.type === 'escalate') html = renderEscalateModal(m);
+  else if (m.type === 'complete') html = renderCompleteModal(m);
+  else if (m.type === 'reject') html = renderRejectModal(m);
+  else if (m.type === 'audit') html = renderAuditModal(m);
+  else if (m.type === 'reassign') html = renderReassignModal(m);
+  $root.innerHTML = html;
+  bindModalEvents();
+}
+
+function bindModalEvents() {
+  document.querySelectorAll('[data-modal-close]').forEach(el => el.addEventListener('click', closeModal));
+  document.querySelectorAll('[data-modal-confirm]').forEach(el => {
+    el.addEventListener('click', () => {
+      const action = el.dataset.modalConfirm;
+      handleModalConfirm(action);
+    });
+  });
+}
+
+function handleModalConfirm(action) {
+  const m = state.modal;
+  const pr = PROJECTS.find(p => p.id === m.projectId);
+  switch (m.type) {
+    case 'route': {
+      const route = document.querySelector('input[name="route-pick"]:checked')?.value;
+      if (!route) { toast('Pick a route.'); return; }
+      pr.route = route;
+      const seq = (PROJECTS.filter(x => x.npsId).length + 10070);
+      pr.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (17302 + Math.floor(Math.random() * 200));
+      pr.currentStage = route === 'PPP' ? 7 : 1;
+      pr.status = 'Open';
+      pr.owner = null; pr.ownerInitials = null;
+      pr.daysInStage = 0;
+      pr.visitHistory.push({ stage: route === 'PPP' ? 'CS' : 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
+      pr.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.` });
+      closeModal();
+      renderMain();
+      toast(`Routed → ${route}. ${pr.npsId} created.`);
+      return;
+    }
+    case 'hold': {
+      pr.status = 'Hold';
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: 'Stage placed on Hold. SLA timer continues per Anthony.' });
+      closeModal();
+      renderMain();
+      toast('Item held. SLA does not pause.');
+      return;
+    }
+    case 'escalate': {
+      pr.status = 'Escalated';
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: 'Escalated for manager attention.' });
+      closeModal();
+      renderMain();
+      toast('Escalated. Visible on manager dashboard.');
+      return;
+    }
+    case 'complete': {
+      const next = pr.currentStage + 1;
+      // Find the visit for current stage and close it
+      const stageKey = stageById(pr.currentStage)?.key;
+      const cur = pr.visitHistory.find(v => v.stage === stageKey && !v.exitedAt);
+      if (cur) cur.exitedAt = nowStamp(), cur.outcome = m.label === 'approve' ? 'Approve' : (m.label === 'close' ? 'Close' : 'Complete');
+      if (pr.currentStage === 7) {
+        // Closing PPP closes the workflow
+        pr.currentStage = 8;
+        pr.status = 'Closed';
+        pr.daysInStage = 0;
+        pr.ppp = pr.ppp || {};
+        pr.ppp.closedAt = nowStamp();
+        pr.notes.push({ author: persona().name, ts: nowStamp(), text: 'Workflow closed. Final ESD confirmed.' });
+      } else {
+        pr.currentStage = next;
+        pr.status = 'Open';
+        pr.owner = null; pr.ownerInitials = null;
+        pr.daysInStage = 0;
+        const nextStage = stageById(next);
+        pr.visitHistory.push({ stage: nextStage.key, enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
+      }
+      closeModal();
+      renderMain();
+      toast(pr.currentStage === 8 ? 'Workflow closed.' : `Advanced to ${stageById(pr.currentStage).name}.`);
+      return;
+    }
+    case 'reject': {
+      const code = document.querySelector('input[name="rc"]:checked')?.value;
+      const tgt = document.getElementById('reject-target')?.value;
+      if (!code) { toast('Pick a rejection code.'); return; }
+      const tgtId = parseInt(tgt, 10);
+      const stageKey = stageById(pr.currentStage)?.key;
+      const cur = pr.visitHistory.find(v => v.stage === stageKey && !v.exitedAt);
+      if (cur) { cur.exitedAt = nowStamp(); cur.outcome = `Reject (${code})`; }
+      pr.currentStage = tgtId;
+      pr.status = 'Open';
+      pr.owner = null; pr.ownerInitials = null;
+      pr.daysInStage = 0;
+      const tgtStage = stageById(tgtId);
+      pr.visitHistory.push({ stage: tgtStage.key, enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Rejected with code ${code}. Returned to ${tgtStage.name}.` });
+      closeModal();
+      renderMain();
+      toast(`Rejected → returned to ${tgtStage.name}.`);
+      return;
+    }
+    case 'reassign': {
+      const newOwner = document.getElementById('reassign-target')?.value;
+      if (!newOwner) { toast('Pick a new owner.'); return; }
+      const reason = document.getElementById('reassign-reason')?.value || 'Workload balance';
+      const oldOwner = pr.owner || 'Pool';
+      pr.owner = newOwner;
+      pr.ownerInitials = newOwner.split(' ').map(s => s[0]).join('').slice(0,2).toUpperCase();
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Reassigned from ${oldOwner} → ${newOwner}. Reason: ${reason}.` });
+      closeModal();
+      renderMain();
+      toast(`Reassigned to ${newOwner}.`);
+      return;
+    }
+    default:
+      closeModal();
+  }
+}
+
+function nowStamp() {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function modalShell(title, body, footerHtml) {
+  return `
+    <div class="backdrop" data-modal-close-bg>
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <h3>${escapeHtml(title)}</h3>
+          <button class="btn btn-tertiary" data-modal-close>${ico('i-x','ico-sm')}</button>
+        </div>
+        <div class="modal-body">${body}</div>
+        <div class="modal-footer">${footerHtml}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRouteModal(m) {
+  const pr = PROJECTS.find(p => p.id === m.projectId);
+  return modalShell('Route — choose path', `
+    <p class="text-sm text-muted mb-4">Choose how <strong class="text-strong">${escapeHtml(pr.soLine)}</strong> (${escapeHtml(pr.customer)}) should proceed. Closing this stage acts as your CS approval and is recorded in the audit log.</p>
+    <div class="space-y-2">
+      <label class="card flex items-start gap-3 p-3 clickable" style="border-width: 2px; border-color: var(--neutral-200);">
+        <input type="radio" name="route-pick" value="PPP" class="mt-1" />
+        <div>
+          <div class="font-semibold">${ico('i-route','ico-sm')} PPP fast-path <span class="pill pill-green ml-2">Recommended for already-set-up parts</span></div>
+          <div class="text-sm text-muted mt-1">Skip AE / DS / ME / CM. Item moves directly to PPP final release. Use when the part already exists in the ERP and no engineering review is needed.</div>
+        </div>
+      </label>
+      <label class="card flex items-start gap-3 p-3 clickable" style="border-width: 2px; border-color: var(--neutral-200);">
+        <input type="radio" name="route-pick" value="NPS" class="mt-1" checked />
+        <div>
+          <div class="font-semibold">${ico('i-route','ico-sm')} NPS engineering path</div>
+          <div class="text-sm text-muted mt-1">Full path: AE → DS → AE Approval → ME → CM → PPP. Required when drawings or design review are needed.</div>
+        </div>
+      </label>
+    </div>
+    <div class="field mt-4"><label>Closing note (optional)</label><textarea class="textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea></div>
+  `, `
+    <button class="btn btn-secondary" data-modal-close>Cancel</button>
+    <button class="btn btn-primary" data-modal-confirm="route">${ico('i-arrow-right','ico-sm')} Confirm route</button>
+  `);
+}
+
+function renderHoldModal(m) {
+  return modalShell('Hold this item', `
+    <p class="text-sm text-muted mb-3">Holding the item changes its status to Hold. <strong>SLA does not pause</strong> per the current process — Anthony asked us to keep timers running.</p>
+    <div class="field"><label class="req">Hold reason</label>
+      <select class="select"><option>Awaiting customer</option><option>Awaiting engineering input</option><option>Awaiting material</option><option>Other</option></select>
+    </div>
+    <div class="field mt-3"><label>Note</label><textarea class="textarea" rows="3" placeholder="Optional details for downstream visibility"></textarea></div>
+  `, `
+    <button class="btn btn-secondary" data-modal-close>Cancel</button>
+    <button class="btn btn-primary" data-modal-confirm="hold">Place on hold</button>
+  `);
+}
+
+function renderEscalateModal(m) {
+  return modalShell('Escalate to manager', `
+    <p class="text-sm text-muted mb-3">Escalation flags the item for the Engineering Manager's attention. The current owner does not change.</p>
+    <div class="field"><label class="req">Escalation reason</label><textarea class="textarea" rows="3" required placeholder="What's blocking? What do you need?"></textarea></div>
+  `, `
+    <button class="btn btn-secondary" data-modal-close>Cancel</button>
+    <button class="btn btn-warning" data-modal-confirm="escalate">${ico('i-warn','ico-sm')} Escalate</button>
+  `);
+}
+
+function renderCompleteModal(m) {
+  const pr = PROJECTS.find(p => p.id === m.projectId);
+  const cur = stageById(pr.currentStage);
+  const next = pr.currentStage === 7 ? 'Workflow closes' : stageById(pr.currentStage + 1)?.name || 'Next stage';
+  const verb = m.label === 'approve' ? 'Approve' : (m.label === 'close' ? 'Close workflow' : 'Mark complete');
+  return modalShell(`${verb} — ${escapeHtml(cur.name)}`, `
+    <p class="text-sm mb-3"><strong>You are about to ${m.label === 'close' ? 'close the workflow' : (m.label === 'approve' ? 'approve and release the item' : 'complete this stage')}.</strong></p>
+    <ul class="text-sm text-muted space-y-1 mb-3" style="list-style: disc; padding-left: 18px;">
+      <li>Current stage visit will close with outcome <strong>${escapeHtml(verb)}</strong>.</li>
+      <li>${escapeHtml(pr.currentStage === 7 ? 'Workflow item status changes to Closed.' : `Next stage opens: ${next}.`)}</li>
+      <li>Your name and timestamp are recorded as approval evidence.</li>
+      <li>Stage data becomes read-only.</li>
+    </ul>
+    <div class="field"><label>Closing note (optional)</label><textarea class="textarea" rows="2" placeholder="Optional context for the audit log"></textarea></div>
+  `, `
+    <button class="btn btn-secondary" data-modal-close>Cancel</button>
+    <button class="btn btn-primary" data-modal-confirm="complete">${ico('i-check','ico-sm')} Confirm ${escapeHtml(verb)}</button>
+  `);
+}
+
+function renderRejectModal(m) {
+  const pr = PROJECTS.find(p => p.id === m.projectId);
+  // Allowed return targets are any prior stage
+  const opts = STAGES.filter(s => s.id < pr.currentStage);
+  return modalShell('Reject — return to a prior stage', `
+    <p class="text-sm text-muted mb-3">Rejection sends the item back upstream. The current stage visit closes with outcome <strong>Reject</strong>.</p>
+    <div class="field mb-3">
+      <label class="req">Rejection code</label>
+      <div class="space-y-1">
+        ${REJECT_CODES.map((rc,i) => `
+          <label class="checkbox" style="padding: 6px 8px; border: 1px solid var(--neutral-200); border-radius: 4px;">
+            <input type="radio" name="rc" value="${rc.code}" ${i===1?'checked':''}/>
+            <span><strong>${escapeHtml(rc.code)}</strong> — ${escapeHtml(rc.label)}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+    <div class="field"><label class="req">Return to stage</label>
+      <select class="select" id="reject-target">
+        ${opts.map(s => `<option value="${s.id}">S${s.id} · ${escapeHtml(s.name)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field mt-3"><label class="req">Closing note</label><textarea class="textarea" rows="3" required placeholder="Explain what needs correction"></textarea></div>
+  `, `
+    <button class="btn btn-secondary" data-modal-close>Cancel</button>
+    <button class="btn btn-danger" data-modal-confirm="reject">${ico('i-x','ico-sm')} Reject and return</button>
+  `);
+}
+
+function renderReassignModal(m) {
+  const pr = PROJECTS.find(p => p.id === m.projectId);
+  // Mock candidate list per stage
+  const candidates = {
+    2: ['Mike Chen','Aanya Iyer','Ben Cooper','Hannah Liu','Jamal Davis','Sven Olsen'],
+    3: ['Lisa Park','Carla Diaz','Pradeep Rao','Daniel Kim','Beth Sanders'],
+    5: ['Raj Patel','Kim Yoo','Marco Bianchi'],
+  }[pr.currentStage] || [];
+  return modalShell('Reassign — pick new owner', `
+    <p class="text-sm text-muted mb-3">Reassign the active stage owner. Stage Visit and SLA timing are not interrupted; an Assignment Change event is written to audit.</p>
+    <div class="field"><label class="req">Current owner</label><div class="field-readonly">${escapeHtml(pr.owner || 'Unclaimed (pool)')}</div></div>
+    <div class="field mt-3"><label class="req">New owner</label>
+      <select class="select" id="reassign-target">
+        ${candidates.filter(c => c !== pr.owner).map(c => `<option>${escapeHtml(c)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field mt-3"><label class="req">Reason</label>
+      <select class="select" id="reassign-reason">
+        <option>Workload balance</option>
+        <option>Out of office</option>
+        <option>Specialty match</option>
+        <option>Performance / coaching</option>
+        <option>Other</option>
+      </select>
+    </div>
+  `, `
+    <button class="btn btn-secondary" data-modal-close>Cancel</button>
+    <button class="btn btn-primary" data-modal-confirm="reassign">${ico('i-user','ico-sm')} Confirm reassign</button>
+  `);
+}
+
+function renderAuditModal(m) {
+  const pr = PROJECTS.find(p => p.id === m.projectId);
+  return modalShell(`Audit history — ${escapeHtml(pr.npsId || pr.soLine)}`, `
+    <div class="text-sm space-y-2">
+      ${pr.visitHistory.length === 0 ? '<div class="text-muted">No audit events yet.</div>' : ''}
+      ${pr.visitHistory.map(v => `
+        <div class="flex items-start gap-3 p-3 rounded" style="background: var(--neutral-50); border: 1px solid var(--neutral-200);">
+          <span class="pill pill-blue">${escapeHtml(v.stage)}</span>
+          <div class="flex-1 min-w-0">
+            <div><strong>Entered:</strong> ${escapeHtml(v.enteredAt)}${v.exitedAt ? ` · <strong>Exited:</strong> ${escapeHtml(v.exitedAt)}` : ' <span class="pill pill-amber ml-1">Active</span>'}</div>
+            <div class="text-muted">Owner: ${escapeHtml(v.owner || 'Pool')} · Outcome: ${escapeHtml(v.outcome || 'In progress')}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `, `<button class="btn btn-secondary" data-modal-close>Close</button>`);
+}
+
+//============================================================
+// TOAST
+//============================================================
+function toast(msg) {
+  const $r = document.getElementById('toast-root');
+  $r.innerHTML = `<div class="toast">${escapeHtml(msg)}</div>`;
+  setTimeout(() => { $r.innerHTML = ''; }, 2400);
+}
+
+//============================================================
+// INIT
+//============================================================
+renderShell();
+</script>
+</body>
+</html>

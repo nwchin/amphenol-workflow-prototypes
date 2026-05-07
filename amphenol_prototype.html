@@ -1805,6 +1805,16 @@ function bindModalEvents() {
       handleModalConfirm(action);
     });
   });
+  [['associate-existing-nps', 'existing-nps-select'], ['associate-existing-nps-bulk', 'existing-nps-select-bulk']].forEach(([cbId, selId]) => {
+    const cb = document.getElementById(cbId);
+    const sel = document.getElementById(selId);
+    if (!cb || !sel) return;
+    cb.addEventListener('change', () => {
+      sel.style.display = cb.checked ? '' : 'none';
+      const npsRadio = document.querySelector('input[name="route-pick"][value="NPS"], input[name="route-pick-bulk"][value="NPS"]');
+      if (cb.checked && npsRadio) npsRadio.checked = true;
+    });
+  });
 }
 
 function handleModalConfirm(action) {
@@ -1814,25 +1824,30 @@ function handleModalConfirm(action) {
     case 'route': {
       const route = document.querySelector('input[name="route-pick"]:checked')?.value;
       if (!route) { toast('Pick a route.'); return; }
+      const associateCb = document.getElementById('associate-existing-nps');
+      const associateTo = (route === 'NPS' && associateCb?.checked) ? document.getElementById('existing-nps-select')?.value : null;
       pr.route = route;
-      const seq = (PROJECTS.filter(x => x.npsId).length + 10070);
       pr.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (17302 + Math.floor(Math.random() * 200));
+      pr.associatedNpsId = associateTo || null;
       pr.currentStage = route === 'PPP' ? 7 : 1;
       pr.status = 'Open';
       pr.owner = null; pr.ownerInitials = null;
       pr.daysInStage = 0;
-      pr.visitHistory.push({ stage: route === 'PPP' ? 'CS' : 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
+      pr.visitHistory.push({ stage: 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
       pr.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
-      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.` });
+      const noteSuffix = associateTo ? ` Associated to existing NPS ${associateTo}.` : '';
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}` });
       closeModal();
       renderMain();
-      toast(`Routed → ${route}. ${pr.npsId} created.`);
+      toast(`Routed → ${route}. ${pr.npsId} created${associateTo ? ` (associated to ${associateTo})` : ''}.`);
       return;
     }
     case 'route-bulk': {
       const route = document.querySelector('input[name="route-pick-bulk"]:checked')?.value;
       if (!route) { toast('Pick a route.'); return; }
       const note = document.getElementById('bulk-route-note')?.value?.trim();
+      const associateCb = document.getElementById('associate-existing-nps-bulk');
+      const associateTo = (route === 'NPS' && associateCb?.checked) ? document.getElementById('existing-nps-select-bulk')?.value : null;
       const ids = [...state.selectedLineIds];
       let routedCount = 0;
       let nextSeq = 17500 + Math.floor(Math.random() * 200);
@@ -1841,19 +1856,21 @@ function handleModalConfirm(action) {
         if (!target || target.currentStage !== 0) return;
         target.route = route;
         target.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (nextSeq++);
+        target.associatedNpsId = associateTo || null;
         target.currentStage = route === 'PPP' ? 7 : 1;
         target.status = 'Open';
         target.owner = null; target.ownerInitials = null;
         target.daysInStage = 0;
         target.visitHistory.push({ stage: 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
         target.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
-        target.notes.push({ author: persona().name, ts: nowStamp(), text: `Bulk-routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${note ? ' Note: ' + note : ''}` });
+        const noteSuffix = associateTo ? ` Associated to existing NPS ${associateTo}.` : '';
+        target.notes.push({ author: persona().name, ts: nowStamp(), text: `Bulk-routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}${note ? ' Note: ' + note : ''}` });
         routedCount++;
       });
       state.selectedLineIds.clear();
       closeModal();
       renderMain();
-      toast(`Routed ${routedCount} line${routedCount === 1 ? '' : 's'} → ${route}.`);
+      toast(`Routed ${routedCount} line${routedCount === 1 ? '' : 's'} → ${route}${associateTo ? ` (associated to ${associateTo})` : ''}.`);
       return;
     }
     case 'hold': {
@@ -1958,8 +1975,17 @@ function modalShell(title, body, footerHtml) {
   `;
 }
 
+function getActiveNpsOptions(excludeIds = []) {
+  return PROJECTS
+    .filter(p => p.npsId && p.npsId.startsWith('NPS-') && p.currentStage > 0 && p.currentStage < 8 && !excludeIds.includes(p.id))
+    .map(p => ({ id: p.npsId, label: `${p.npsId} — ${p.soLine} · ${p.customer}` }));
+}
+
 function renderRouteModal(m) {
   const pr = PROJECTS.find(p => p.id === m.projectId);
+  const npsOptions = getActiveNpsOptions([pr.id]);
+  const optionsHtml = npsOptions.map(o => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.label)}</option>`).join('');
+  const hasOptions = npsOptions.length > 0;
   return modalShell('Route — choose path', `
     <p class="text-sm text-muted mb-4">Choose how <strong class="text-strong">${escapeHtml(pr.soLine)}</strong> (${escapeHtml(pr.customer)}) should proceed. Closing this stage acts as your CS approval and is recorded in the audit log.</p>
     <div class="space-y-2">
@@ -1972,13 +1998,19 @@ function renderRouteModal(m) {
       </label>
       <label class="card flex items-start gap-3 p-3 clickable" style="border-width: 2px; border-color: var(--neutral-200);">
         <input type="radio" name="route-pick" value="NPS" class="mt-1" checked />
-        <div>
+        <div class="flex-1">
           <div class="font-semibold">${ico('i-route','ico-sm')} NPS engineering path</div>
-          <div class="text-sm text-muted mt-1"></div>
+          <div class="flex items-center gap-3 mt-2" onclick="event.stopPropagation()">
+            <span class="checkbox" ${hasOptions ? '' : 'style="opacity:.5;"'} onclick="event.stopPropagation()">
+              <input type="checkbox" id="associate-existing-nps" ${hasOptions ? '' : 'disabled'} onclick="event.stopPropagation()" />
+              <span>Associate to existing active NPS</span>
+            </span>
+            <select id="existing-nps-select" class="select" onclick="event.stopPropagation()" style="display:none; flex:1; min-width: 160px;">${optionsHtml}</select>
+          </div>
         </div>
       </label>
     </div>
-    <div class="field mt-4"><label>Closing note (optional)</label><textarea class="textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea></div>
+    <div class="field mt-4"><label>Closing note (optional)</label><textarea id="route-note" class="textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea></div>
   `, `
     <button class="btn btn-secondary" data-modal-close>Cancel</button>
     <button class="btn btn-primary" data-modal-confirm="route">${ico('i-arrow-right','ico-sm')} Confirm route</button>
@@ -1989,6 +2021,9 @@ function renderRouteBulkModal(m) {
   const ids = [...state.selectedLineIds];
   const lines = ids.map(id => PROJECTS.find(p => p.id === id)).filter(Boolean);
   const preselect = m.preselect === 'PPP' ? 'PPP' : 'NPS';
+  const npsOptions = getActiveNpsOptions(ids);
+  const npsOptionsHtml = npsOptions.map(o => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.label)}</option>`).join('');
+  const hasOptions = npsOptions.length > 0;
   const linesHtml = lines.map(pr => `
     <li class="flex items-center gap-3 py-2" style="border-bottom: 1px solid var(--neutral-100);">
       <span class="text-strong" style="min-width: 84px;">${escapeHtml(pr.soLine)}</span>
@@ -2014,9 +2049,15 @@ function renderRouteBulkModal(m) {
       </label>
       <label class="card flex items-start gap-3 p-3 clickable" style="border-width: 2px; border-color: var(--neutral-200);">
         <input type="radio" name="route-pick-bulk" value="NPS" class="mt-1" ${preselect === 'NPS' ? 'checked' : ''} />
-        <div>
+        <div class="flex-1">
           <div class="font-semibold">${ico('i-route','ico-sm')} NPS engineering path</div>
-          <div class="text-sm text-muted mt-1">Full path: AE → DS → AE Approval → ME → CM → PPP. Required when drawings or design review are needed.</div>
+          <div class="flex items-center gap-3 mt-2" onclick="event.stopPropagation()">
+            <span class="checkbox" ${hasOptions ? '' : 'style="opacity:.5;"'} onclick="event.stopPropagation()">
+              <input type="checkbox" id="associate-existing-nps-bulk" ${hasOptions ? '' : 'disabled'} onclick="event.stopPropagation()" />
+              <span>Associate to existing active NPS</span>
+            </span>
+            <select id="existing-nps-select-bulk" class="select" onclick="event.stopPropagation()" style="display:none; flex:1; min-width: 200px;">${npsOptionsHtml}</select>
+          </div>
         </div>
       </label>
     </div>

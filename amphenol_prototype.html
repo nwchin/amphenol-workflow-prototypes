@@ -2106,10 +2106,6 @@ function handleModalConfirm(action) {
       if (!route) { toast('Pick a route.'); return; }
       const associateCb = document.getElementById('associate-existing-nps');
       const associateTo = (route === 'NPS' && associateCb?.checked) ? document.getElementById('existing-nps-select')?.value : null;
-      const priorityPick = document.getElementById('route-priority')?.value;
-      const priorityChanged = priorityPick && priorityPick !== pr.priority;
-      const priorityFrom = pr.priority;
-      if (priorityPick) pr.priority = priorityPick;
       pr.route = route;
       pr.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (17302 + Math.floor(Math.random() * 200));
       pr.associatedNpsId = associateTo || null;
@@ -2120,8 +2116,7 @@ function handleModalConfirm(action) {
       pr.visitHistory.push({ stage: 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
       pr.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
       const noteSuffix = associateTo ? ` Associated to existing NPS ${associateTo}.` : '';
-      const prioritySuffix = priorityChanged ? ` Priority set to ${priorityPick} (was ${priorityFrom || '—'}).` : '';
-      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}${prioritySuffix}` });
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}` });
       closeModal();
       renderMain();
       toast(`Routed → ${route}. ${pr.npsId} created${associateTo ? ` (associated to ${associateTo})` : ''}.`);
@@ -2292,7 +2287,6 @@ function renderRouteModal(m) {
   const npsOptions = getActiveNpsOptions([pr.id]);
   const optionsHtml = npsOptions.map(o => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.label)}</option>`).join('');
   const hasOptions = npsOptions.length > 0;
-  const curPriority = pr.priority || DEFAULT_PRIORITY;
   return modalShell('Route — choose path', `
     <p class="text-sm text-muted mb-4">Choose how <strong class="text-strong">${escapeHtml(pr.soLine)}</strong> (${escapeHtml(pr.customer)}) should proceed. Closing this stage acts as your CS approval and is recorded in the audit log.</p>
     <div class="space-y-2">
@@ -2317,13 +2311,6 @@ function renderRouteModal(m) {
         </div>
       </label>
     </div>
-    <div class="field mt-4">
-      <label class="req">Priority</label>
-      <select id="route-priority" class="select">
-        ${PRIORITY_OPTIONS.map(o => `<option ${curPriority === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('')}
-      </select>
-    </div>
-    <div class="field mt-3"><label>Closing note (optional)</label><textarea id="route-note" class="textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea></div>
   `, `
     <button class="btn btn-secondary" data-modal-close>Cancel</button>
     <button class="btn btn-primary" data-modal-confirm="route">${ico('i-arrow-right','ico-sm')} Confirm route</button>

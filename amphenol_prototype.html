@@ -90,6 +90,12 @@
   }
   .card { background: white; border: 1px solid var(--neutral-200); border-radius: 6px; }
   .card-header { padding: 12px 16px; border-bottom: 1px solid var(--neutral-200); font-weight: 600; font-size: 13px; color: var(--neutral-700); text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: space-between; }
+  .card.accordion > .card-header { cursor: pointer; user-select: none; }
+  .card.accordion > .card-header:hover { background: var(--neutral-50); }
+  .card.accordion .accordion-caret { color: var(--neutral-500); transition: transform .15s ease; display: inline-flex; }
+  .card.accordion.collapsed > .card-header { border-bottom-color: transparent; }
+  .card.accordion.collapsed > .accordion-body { display: none; }
+  .card.accordion.collapsed .accordion-caret { transform: rotate(-90deg); }
   .pill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em; white-space: nowrap; }
   .pill-blue   { background: var(--amph-blue-50); color: var(--amph-blue-800); border: 1px solid var(--amph-blue-100); }
   .pill-gray   { background: var(--neutral-100); color: var(--neutral-700); border: 1px solid var(--neutral-200); }
@@ -246,6 +252,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
   <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></symbol>
   <symbol id="i-bar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
   <symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
@@ -376,7 +383,7 @@ const PROJECTS = [
     ],
   },
   {
-    id: 'P-5', soLine: 'SO-1235-1', npsId: 'NPS-10073', route: 'NPS',
+    id: 'P-5', soLine: 'SO-1235-1', npsId: 'NPS-10073', associatedNpsId: 'NPS-10071', route: 'NPS',
     customer: 'L3Harris', custNo: 'L3-7762', priority: 'Med', dollarValue: 71800,
     part: 'AFSI-Hyb-15A', partDesc: 'Hybrid power+signal, 15A, IP68', qty: 30,
     esd: '2026-07-15', asd: '2026-07-29',
@@ -433,7 +440,7 @@ const PROJECTS = [
   {
     id: 'P-7', soLine: 'SO-1234-5', npsId: null, route: null,
     customer: 'Boeing Defense', custNo: 'BD-0421', priority: 'High', dollarValue: 167300,
-    part: 'MIL-DTL-38999/24', partDesc: '6-pos circular MIL connector, plug', qty: 40,
+    part: 'MIL-DTL-38999/26', partDesc: '8-pos circular MIL connector', qty: 40,
     esd: '2026-07-02', asd: '2026-07-16',
     currentStage: 0, status: 'Awaiting CS routing',
     owner: null, ownerInitials: null,
@@ -560,6 +567,42 @@ const parentSoMeta = (parentSoId) => {
     totalDollarValue: lines.reduce((sum, l) => sum + (l.dollarValue || 0), 0),
     lines,
   };
+};
+
+const npsKeysForLine = (pr) => {
+  const keys = new Set();
+  if (pr.npsId) keys.add(pr.npsId);
+  if (pr.associatedNpsId) keys.add(pr.associatedNpsId);
+  return keys;
+};
+
+const linesWithSamePart = (pr) => {
+  const myParent = parentSoIdOf(pr);
+  return PROJECTS.filter(p => p.id !== pr.id && parentSoIdOf(p) === myParent && p.part === pr.part);
+};
+
+const relatedParentSos = (npsKeys, excludeSoId) => {
+  if (!npsKeys || !npsKeys.size) return [];
+  const ids = new Set();
+  PROJECTS.forEach(other => {
+    const otherParent = parentSoIdOf(other);
+    if (otherParent === excludeSoId) return;
+    if ((other.npsId && npsKeys.has(other.npsId)) || (other.associatedNpsId && npsKeys.has(other.associatedNpsId))) {
+      ids.add(otherParent);
+    }
+  });
+  return [...ids].map(id => parentSoMeta(id)).filter(Boolean);
+};
+
+const relatedSosForLine = (pr) => relatedParentSos(npsKeysForLine(pr), parentSoIdOf(pr));
+
+const relatedSosForParent = (parentSoId) => {
+  const keys = new Set();
+  linesForParent(parentSoId).forEach(p => {
+    if (p.npsId) keys.add(p.npsId);
+    if (p.associatedNpsId) keys.add(p.associatedNpsId);
+  });
+  return relatedParentSos(keys, parentSoId);
 };
 const fmtDate = (d) => d || '—';
 const priorityPill = (p) => {
@@ -1078,13 +1121,15 @@ function renderLineDetailView(parent) {
       ${renderProjectHeader(pr, parent)}
       ${banner ? `<div class="mb-4">${banner}</div>` : ''}
       <div class="grid gap-4" style="grid-template-columns: 240px minmax(0, 1fr) 360px;">
-        <div class="min-w-0">${renderSoLineNav(parent, pr.id)}</div>
+        <div class="space-y-4 min-w-0">
+          ${renderSoLineNav(parent, pr.id)}
+          ${renderRelatedSosCard(relatedSosForLine(pr))}
+        </div>
         <div class="space-y-4 min-w-0">
           ${renderHeaderAttrs(pr)}
           ${renderSoLineAttrs(pr)}
           ${renderPersonaWorkspace(pr, p, editable)}
           ${renderLineDocumentsCard(pr)}
-          ${renderParentDocumentsCard(parent.id)}
           ${renderActionsBar(pr, p, editable)}
         </div>
         <div class="space-y-4 min-w-0">
@@ -1102,7 +1147,10 @@ function renderParentOverviewView(parent) {
     <div class="max-w-screen-2xl mx-auto">
       ${renderParentHeader(parent)}
       <div class="grid gap-4" style="grid-template-columns: 240px minmax(0, 1fr);">
-        <div class="min-w-0">${renderSoLineNav(parent, null)}</div>
+        <div class="space-y-4 min-w-0">
+          ${renderSoLineNav(parent, null)}
+          ${renderRelatedSosCard(relatedSosForParent(parent.id))}
+        </div>
         <div class="space-y-4 min-w-0">
           ${renderParentAttrs(parent)}
           ${renderParentDocumentsCard(parent.id)}
@@ -1115,19 +1163,23 @@ function renderParentOverviewView(parent) {
 
 function renderSoLineNav(parent, currentLineId) {
   const isParentActive = currentLineId === null;
-  const linesHtml = parent.lines.map(pr => {
-    const active = pr.id === currentLineId;
-    const stagePillHtml = stagePill(pr);
-    return `
-      <div class="so-line-nav-item ${active ? 'active' : ''}" data-nav-line="${pr.id}">
-        <div class="so-line-id">
-          <span>${escapeHtml(pr.soLine)}</span>
-          ${stagePillHtml}
-        </div>
-        <div class="so-line-meta" title="${escapeHtml(pr.part)}">${escapeHtml(pr.part)}</div>
-      </div>
-    `;
-  }).join('');
+  const currentLine = currentLineId ? PROJECTS.find(p => p.id === currentLineId) : null;
+  const samePartLines = currentLine ? linesWithSamePart(currentLine) : [];
+  const sameSection = currentLine ? `
+    <div class="so-line-nav-section">Lines with same part (${samePartLines.length})</div>
+    <div class="so-line-nav-list">
+      ${samePartLines.length === 0
+        ? `<div class="px-2 py-2 text-xs text-muted">No other lines on this SO share this part number.</div>`
+        : samePartLines.map(pr => `
+            <div class="so-line-nav-item" data-nav-line="${pr.id}">
+              <div class="so-line-id">
+                <span>${escapeHtml(pr.soLine)}</span>
+                ${stagePill(pr)}
+              </div>
+              <div class="so-line-meta" title="${escapeHtml(pr.part)}">${escapeHtml(pr.part)}</div>
+            </div>
+          `).join('')}
+    </div>` : '';
 
   return `
     <div class="so-line-nav">
@@ -1145,9 +1197,26 @@ function renderSoLineNav(parent, currentLineId) {
           <div class="so-line-meta">${parent.lineCount} line${parent.lineCount === 1 ? '' : 's'} · ${fmtMoney(parent.totalDollarValue)}</div>
         </div>
       </div>
-      <div class="so-line-nav-section">Line items (${parent.lineCount})</div>
-      <div class="so-line-nav-list">
-        ${linesHtml}
+      ${sameSection}
+    </div>
+  `;
+}
+
+function renderRelatedSosCard(relatedSos) {
+  if (!relatedSos || relatedSos.length === 0) return '';
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span>${ico('i-link','ico-sm')} Related sales orders</span>
+        <span class="text-muted" style="font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 11px;">${relatedSos.length} linked via NPS</span>
+      </div>
+      <div class="so-line-nav-list" style="padding: 8px;">
+        ${relatedSos.map(so => `
+          <div class="so-line-nav-item" data-nav-so="${escapeHtml(so.id)}">
+            <div class="so-line-id"><span>${ico('i-folder','ico-sm')} ${escapeHtml(so.id)}</span></div>
+            <div class="so-line-meta">${escapeHtml(so.customer)} · ${so.lineCount} line${so.lineCount === 1 ? '' : 's'} · ${fmtMoney(so.totalDollarValue)}</div>
+          </div>
+        `).join('')}
       </div>
     </div>
   `;
@@ -1673,15 +1742,12 @@ function renderActionsBar(pr, p, editable) {
   if (pr.currentStage === 0) {
     if (stage === 'CS') {
       return `
-        <div class="card">
-          <div class="card-header">Workflow actions</div>
-          <div class="p-4 flex flex-wrap gap-2 justify-end">
-            <button class="btn btn-secondary" data-action="save">${ico('i-check','ico-sm')} Save</button>
-            <button class="btn btn-secondary" data-action="add-note">${ico('i-msg','ico-sm')} Add note</button>
-            <button class="btn btn-secondary" data-action="hold">${ico('i-pause','ico-sm')} Hold</button>
-            <button class="btn btn-warning" data-action="escalate">${ico('i-warn','ico-sm')} Escalate</button>
-            <button class="btn btn-primary" data-action="route">${ico('i-route','ico-sm')} Route to…</button>
-          </div>
+        <div class="flex flex-wrap gap-2 justify-end">
+          <button class="btn btn-secondary" data-action="save">${ico('i-check','ico-sm')} Save</button>
+          <button class="btn btn-secondary" data-action="add-note">${ico('i-msg','ico-sm')} Add note</button>
+          <button class="btn btn-secondary" data-action="hold">${ico('i-pause','ico-sm')} Hold</button>
+          <button class="btn btn-warning" data-action="escalate">${ico('i-warn','ico-sm')} Escalate</button>
+          <button class="btn btn-primary" data-action="route">${ico('i-route','ico-sm')} Route to…</button>
         </div>
       `;
     }
@@ -1689,11 +1755,8 @@ function renderActionsBar(pr, p, editable) {
   }
   if (!editable) {
     return `
-      <div class="card">
-        <div class="card-header">Workflow actions</div>
-        <div class="p-4 flex flex-wrap gap-2 justify-end">
-          <button class="btn btn-tertiary" disabled>${ico('i-lock','ico-sm')} Read-only — not stage owner</button>
-        </div>
+      <div class="flex flex-wrap gap-2 justify-end">
+        <button class="btn btn-tertiary" disabled>${ico('i-lock','ico-sm')} Read-only — not stage owner</button>
       </div>
     `;
   }
@@ -1709,16 +1772,13 @@ function renderActionsBar(pr, p, editable) {
   else if (curKey === 'PPP') primary = `<button class="btn btn-primary" data-action="close">${ico('i-check','ico-sm')} Close Workflow</button>`;
   const showReject = ['AE','DS','AEA','ME','CM'].includes(curKey);
   return `
-    <div class="card">
-      <div class="card-header">Workflow actions</div>
-      <div class="p-4 flex flex-wrap gap-2 justify-end">
-        <button class="btn btn-secondary" data-action="save">${ico('i-check','ico-sm')} Save</button>
-        <button class="btn btn-secondary" data-action="add-note">${ico('i-msg','ico-sm')} Add note</button>
-        <button class="btn btn-secondary" data-action="hold">${ico('i-pause','ico-sm')} Hold</button>
-        <button class="btn btn-warning" data-action="escalate">${ico('i-warn','ico-sm')} Escalate</button>
-        ${showReject ? `<button class="btn btn-danger" data-action="reject">${ico('i-x','ico-sm')} Reject</button>` : ''}
-        ${primary}
-      </div>
+    <div class="flex flex-wrap gap-2 justify-end">
+      <button class="btn btn-secondary" data-action="save">${ico('i-check','ico-sm')} Save</button>
+      <button class="btn btn-secondary" data-action="add-note">${ico('i-msg','ico-sm')} Add note</button>
+      <button class="btn btn-secondary" data-action="hold">${ico('i-pause','ico-sm')} Hold</button>
+      <button class="btn btn-warning" data-action="escalate">${ico('i-warn','ico-sm')} Escalate</button>
+      ${showReject ? `<button class="btn btn-danger" data-action="reject">${ico('i-x','ico-sm')} Reject</button>` : ''}
+      ${primary}
     </div>
   `;
 }
@@ -1754,12 +1814,15 @@ function renderStageStepper(pr) {
     return { stage: s, status, detail };
   });
   return `
-    <div class="card">
+    <div class="card accordion" data-accordion>
       <div class="card-header">
         <span>${ico('i-list','ico-sm')} Stage progress</span>
-        <button class="btn btn-tertiary" data-action="audit-history" style="font-size: 11px; padding: 2px 8px;">${ico('i-history','ico-sm')} Audit history</button>
+        <span class="flex items-center gap-2">
+          <button class="btn btn-tertiary" data-action="audit-history" style="font-size: 11px; padding: 2px 8px;">${ico('i-history','ico-sm')} Audit history</button>
+          <span class="accordion-caret">${ico('i-chev-down','ico-sm')}</span>
+        </span>
       </div>
-      <div class="p-4">
+      <div class="p-4 accordion-body">
         ${items.map(it => `
           <div class="step ${it.status === 'complete' ? 'complete' : it.status === 'current' ? 'current' : ''}">
             <div class="step-rail">
@@ -1781,9 +1844,12 @@ function renderStageStepper(pr) {
 
 function renderQuickInfo(pr) {
   return `
-    <div class="card">
-      <div class="card-header">${ico('i-clock','ico-sm')} SLA & aging</div>
-      <div class="p-4 space-y-2 text-sm">
+    <div class="card accordion" data-accordion>
+      <div class="card-header">
+        <span>${ico('i-clock','ico-sm')} SLA & aging</span>
+        <span class="accordion-caret">${ico('i-chev-down','ico-sm')}</span>
+      </div>
+      <div class="p-4 space-y-2 text-sm accordion-body">
         <div class="flex justify-between"><span class="text-muted">Total workflow age</span><strong>${pr.ageDays}d</strong></div>
         <div class="flex justify-between"><span class="text-muted">Days in current stage</span><strong>${pr.daysInStage}d</strong></div>
         <div class="flex justify-between"><span class="text-muted">Days till ESD</span><strong>${escapeHtml(daysTillEsd(pr.esd))}</strong></div>
@@ -1795,9 +1861,12 @@ function renderQuickInfo(pr) {
 
 function renderNotesThread(pr) {
   return `
-    <div class="card">
-      <div class="card-header">${ico('i-msg','ico-sm')} Notes <span class="text-muted" style="font-size: 11px; font-weight: 500; text-transform: none; letter-spacing: 0;">${pr.notes.length} permanent · chat-style</span></div>
-      <div class="p-3" style="max-height: 320px; overflow-y: auto;">
+    <div class="card accordion" data-accordion>
+      <div class="card-header">
+        <span>${ico('i-msg','ico-sm')} Notes <span class="text-muted" style="font-size: 11px; font-weight: 500; text-transform: none; letter-spacing: 0;">${pr.notes.length} permanent · chat-style</span></span>
+        <span class="accordion-caret">${ico('i-chev-down','ico-sm')}</span>
+      </div>
+      <div class="p-3 accordion-body" style="max-height: 320px; overflow-y: auto;">
         ${pr.notes.length === 0 ? `<div class="text-center text-muted text-sm py-4">No notes yet.</div>` : pr.notes.map(n => `
           <div class="note">
             <div class="note-meta"><span class="note-author">${escapeHtml(n.author)}</span><span>·</span><span>${escapeHtml(n.ts)}</span></div>
@@ -1805,7 +1874,7 @@ function renderNotesThread(pr) {
           </div>
         `).join('')}
       </div>
-      <div class="p-3 border-t" style="border-color: var(--neutral-200);">
+      <div class="p-3 border-t accordion-body" style="border-color: var(--neutral-200);">
         <div class="flex gap-2 items-end">
           <textarea class="textarea" id="note-input" rows="2" placeholder="Add a permanent note…" style="font-size: 13px;"></textarea>
           <button class="btn btn-primary" id="note-send" style="height: 36px;">Post</button>
@@ -1847,8 +1916,26 @@ function bindProjectEvents() {
     });
   });
 
+  // Related SOs card: jump to a different parent SO's overview
+  document.querySelectorAll('[data-nav-so]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const soId = el.dataset.navSo;
+      if (!soId || !parentSoMeta(soId)) return;
+      state.currentProjectId = null;
+      state.currentParentSoId = soId;
+      renderMain();
+    });
+  });
+
   document.querySelectorAll('[data-action]').forEach(btn => {
     btn.addEventListener('click', () => handleAction(btn.dataset.action, btn));
+  });
+  document.querySelectorAll('[data-accordion] > .card-header').forEach(hdr => {
+    hdr.addEventListener('click', (e) => {
+      if (e.target.closest('[data-action]')) return;
+      hdr.parentElement.classList.toggle('collapsed');
+    });
   });
   document.querySelectorAll('[data-doc-action]').forEach(btn => {
     btn.addEventListener('click', () => handleDocAction(btn));
@@ -2043,18 +2130,14 @@ function handleModalConfirm(action) {
     case 'route-bulk': {
       const route = document.querySelector('input[name="route-pick-bulk"]:checked')?.value;
       if (!route) { toast('Pick a route.'); return; }
-      const note = document.getElementById('bulk-route-note')?.value?.trim();
       const associateCb = document.getElementById('associate-existing-nps-bulk');
       const associateTo = (route === 'NPS' && associateCb?.checked) ? document.getElementById('existing-nps-select-bulk')?.value : null;
-      const bulkPriority = document.getElementById('bulk-route-priority')?.value || '';
       const ids = [...state.selectedLineIds];
       let routedCount = 0;
       let nextSeq = 17500 + Math.floor(Math.random() * 200);
       ids.forEach(id => {
         const target = PROJECTS.find(p => p.id === id);
         if (!target || target.currentStage !== 0) return;
-        const priorityFrom = target.priority;
-        if (bulkPriority) target.priority = bulkPriority;
         target.route = route;
         target.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (nextSeq++);
         target.associatedNpsId = associateTo || null;
@@ -2065,14 +2148,13 @@ function handleModalConfirm(action) {
         target.visitHistory.push({ stage: 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
         target.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
         const noteSuffix = associateTo ? ` Associated to existing NPS ${associateTo}.` : '';
-        const prioritySuffix = (bulkPriority && bulkPriority !== priorityFrom) ? ` Priority set to ${bulkPriority} (was ${priorityFrom || '—'}).` : '';
-        target.notes.push({ author: persona().name, ts: nowStamp(), text: `Bulk-routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}${prioritySuffix}${note ? ' Note: ' + note : ''}` });
+        target.notes.push({ author: persona().name, ts: nowStamp(), text: `Bulk-routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}` });
         routedCount++;
       });
       state.selectedLineIds.clear();
       closeModal();
       renderMain();
-      toast(`Routed ${routedCount} line${routedCount === 1 ? '' : 's'} → ${route}${associateTo ? ` (associated to ${associateTo})` : ''}${bulkPriority ? ` · priority ${bulkPriority}` : ''}.`);
+      toast(`Routed ${routedCount} line${routedCount === 1 ? '' : 's'} → ${route}${associateTo ? ` (associated to ${associateTo})` : ''}.`);
       return;
     }
     case 'hold': {
@@ -2291,17 +2373,6 @@ function renderRouteBulkModal(m) {
           </div>
         </div>
       </label>
-    </div>
-    <div class="form-group field mt-4">
-      <label class="control-label">Priority (applied to all lines)</label>
-      <select id="bulk-route-priority" class="form-control select">
-        <option value="">— Keep individual values —</option>
-        ${PRIORITY_OPTIONS.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}
-      </select>
-    </div>
-    <div class="form-group field mt-3">
-      <label class="control-label">Closing note (optional, applied to all lines)</label>
-      <textarea id="bulk-route-note" class="form-control textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea>
     </div>
   `;
   return `

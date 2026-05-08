@@ -117,17 +117,17 @@
   .nav-item.active { background: var(--amph-blue-50); color: var(--amph-blue-800); font-weight: 600; }
   .nav-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amph-blue); margin-left: auto; opacity: 0; }
   .nav-item.active .dot { opacity: 1; }
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field label { font-size: 12px; font-weight: 600; color: var(--neutral-700); }
+  .field { display: flex; flex-direction: column; gap: 2px; }
+  .field label { font-size: 12px; font-weight: 400; color: var(--neutral-500); }
   .field label.req::after { content: ' *'; color: var(--danger-700); }
-  .field-readonly { padding: 8px 12px; border: 1px solid var(--neutral-200); background: var(--neutral-50); border-radius: 4px; color: var(--neutral-800); font-size: 14px; min-height: 36px; display: flex; align-items: center; }
+  .field-readonly { padding: 0; border: 0; background: transparent; border-radius: 0; color: var(--neutral-900); font-size: 14px; font-weight: 600; min-height: 22px; display: flex; align-items: center; }
   /* Mendix Atlas — form inputs (.form-control / .input / .select / .textarea) */
   .form-control, .input, .select, .textarea { width: 100%; padding: var(--form-input-padding-y) var(--form-input-padding-x); border: 1px solid var(--form-input-border-color); background: var(--form-input-bg); border-radius: var(--form-input-border-radius); font-size: 14px; font-family: inherit; color: var(--neutral-900); }
   .form-control:hover, .input:hover, .select:hover, .textarea:hover { background: var(--form-input-bg-hover); }
   .form-control:focus, .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--form-input-focus-color); box-shadow: 0 0 0 3px var(--form-input-focus-ring); background: var(--form-input-bg); }
   .form-control[disabled], .form-control[readonly] { opacity: .6; background: var(--form-input-bg-disabled); }
-  .form-group { display: flex; flex-direction: column; gap: 4px; }
-  .form-group .control-label { font-size: 12px; font-weight: 600; color: var(--neutral-700); }
+  .form-group { display: flex; flex-direction: column; gap: 2px; }
+  .form-group .control-label { font-size: 12px; font-weight: 400; color: var(--neutral-500); }
   /* Mendix Atlas — checkbox (.mx-checkbox / .checkbox) */
   .mx-checkbox, .checkbox { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 14px; }
   .mx-checkbox input[type="checkbox"], .checkbox input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--brand-primary); cursor: pointer; margin: 0; }
@@ -178,6 +178,22 @@
   .step-name { font-size: 13px; font-weight: 600; color: var(--neutral-700); }
   .step.complete .step-name, .step.current .step-name { color: var(--neutral-900); }
   .step-meta { font-size: 11px; color: var(--neutral-500); margin-top: 2px; }
+  /* Documents */
+  .doc-list { display: flex; flex-direction: column; gap: 6px; }
+  .doc-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--neutral-200); border-radius: 4px; background: white; }
+  .doc-item:hover { background: var(--amph-blue-25); border-color: var(--amph-blue-100); }
+  .doc-icon { width: 36px; height: 36px; border-radius: 4px; background: var(--amph-blue-25); color: var(--amph-blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-name { font-size: 13px; font-weight: 600; color: var(--neutral-900); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .doc-meta { font-size: 11px; color: var(--neutral-500); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+  .doc-meta .sep { color: var(--neutral-300); }
+  .doc-actions { display: flex; gap: 2px; flex-shrink: 0; }
+  .doc-actions .btn { padding: 4px 8px; }
+  .doc-empty { padding: 24px 12px; text-align: center; color: var(--neutral-500); font-size: 13px; border: 1px dashed var(--neutral-200); border-radius: 4px; background: var(--neutral-25); }
+  .doc-empty .doc-empty-icon { display: inline-flex; opacity: .4; margin-bottom: 6px; }
+  .doc-dropzone { border: 1px dashed var(--neutral-300); border-radius: 4px; padding: 16px; text-align: center; background: var(--neutral-25); color: var(--neutral-600); font-size: 13px; cursor: pointer; }
+  .doc-dropzone:hover { background: var(--amph-blue-25); border-color: var(--amph-blue); color: var(--amph-blue); }
+  .doc-filechip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: var(--neutral-100); border-radius: 4px; font-size: 12px; color: var(--neutral-800); margin: 2px; }
   /* Notes */
   .note { background: var(--neutral-50); border: 1px solid var(--neutral-200); border-radius: 6px; padding: 10px 12px; }
   .note + .note { margin-top: 8px; }
@@ -254,6 +270,9 @@
   <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
   <symbol id="i-bom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></symbol>
 </svg>
 
 <script>
@@ -447,6 +466,36 @@ const STATUS_OPTIONS = {
   PPP: ['Open','Assigned','Complete'],
 };
 
+const PRIORITY_OPTIONS = ['Critical','High','Med','Low'];
+const DEFAULT_PRIORITY = 'Med';
+
+const DOC_CATEGORIES = ['Customer PO','Drawing','Specification','Quote','Test Report','Certification','Email','Other'];
+
+// SO-level documents — keyed by parent SO id. Line documents — keyed by project id.
+const SO_DOCUMENTS = {
+  'SO-1234': [
+    { id: 'd-so1234-1', name: 'Boeing_PO_BD-0421.pdf',     size: 482301,  category: 'Customer PO',    uploadedBy: 'Sarah Brown', uploadedAt: '2026-04-02 09:14' },
+    { id: 'd-so1234-2', name: 'Master_RFQ_BD-0421.pdf',    size: 1284912, category: 'Specification', uploadedBy: 'Sarah Brown', uploadedAt: '2026-04-02 09:18' },
+  ],
+  'SO-1235': [
+    { id: 'd-so1235-1', name: 'L3Harris_PO_L3-7762.pdf',   size: 365422,  category: 'Customer PO',    uploadedBy: 'Sarah Brown', uploadedAt: '2026-04-08 14:22' },
+  ],
+};
+
+const LINE_DOCUMENTS = {
+  'P-2': [
+    { id: 'd-p2-1', name: 'AFSI-D38999-26-W11SN_dwg_revA.pdf', size: 856421, category: 'Drawing',    uploadedBy: 'Lisa Park',   uploadedAt: '2026-05-03 11:18' },
+    { id: 'd-p2-2', name: 'Salt_fog_test_plan.pdf',            size: 245100, category: 'Test Report', uploadedBy: 'Mike Chen',   uploadedAt: '2026-04-29 13:48' },
+  ],
+  'P-5': [
+    { id: 'd-p5-1', name: 'AFSI-Hyb-15A_build_pkg.zip',        size: 4218400, category: 'Drawing',     uploadedBy: 'Lisa Park',   uploadedAt: '2026-05-01 10:55' },
+    { id: 'd-p5-2', name: 'IP68_certification.pdf',            size: 198722,  category: 'Certification', uploadedBy: 'Mike Chen', uploadedAt: '2026-04-25 15:42' },
+  ],
+  'P-6': [
+    { id: 'd-p6-1', name: 'RFx-002_RF_perf_18GHz.pdf',         size: 1488700, category: 'Test Report', uploadedBy: 'Mike Chen',   uploadedAt: '2026-04-21 10:25' },
+  ],
+};
+
 const REJECT_CODES = [
   { code: 'RC-INC',  label: 'Incomplete information' },
   { code: 'RC-DSGN', label: 'Design issue' },
@@ -482,6 +531,16 @@ const project = () => PROJECTS.find(p => p.id === state.currentProjectId);
 const stageById = (id) => STAGES.find(s => s.id === id);
 const stageByKey = (k) => STAGES.find(s => s.key === k);
 const fmtMoney = (n) => '$' + n.toLocaleString('en-US');
+const fmtBytes = (n) => {
+  if (n == null) return '—';
+  if (n < 1024) return n + ' B';
+  if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+  if (n < 1024 * 1024 * 1024) return (n / (1024 * 1024)).toFixed(1) + ' MB';
+  return (n / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+};
+const getLineDocs = (projectId) => LINE_DOCUMENTS[projectId] || (LINE_DOCUMENTS[projectId] = []);
+const getParentDocs = (parentSoId) => SO_DOCUMENTS[parentSoId] || (SO_DOCUMENTS[parentSoId] = []);
+const newDocId = () => 'd-' + Math.random().toString(36).slice(2, 9);
 
 // Parent SO helpers — derive parent metadata from line items on the fly
 const parentSoIdOf = (prOrSoLine) => {
@@ -1024,6 +1083,8 @@ function renderLineDetailView(parent) {
           ${renderHeaderAttrs(pr)}
           ${renderSoLineAttrs(pr)}
           ${renderPersonaWorkspace(pr, p, editable)}
+          ${renderLineDocumentsCard(pr)}
+          ${renderParentDocumentsCard(parent.id)}
           ${renderActionsBar(pr, p, editable)}
         </div>
         <div class="space-y-4 min-w-0">
@@ -1044,6 +1105,7 @@ function renderParentOverviewView(parent) {
         <div class="min-w-0">${renderSoLineNav(parent, null)}</div>
         <div class="space-y-4 min-w-0">
           ${renderParentAttrs(parent)}
+          ${renderParentDocumentsCard(parent.id)}
           ${renderParentLinesTable(parent)}
         </div>
       </div>
@@ -1233,6 +1295,70 @@ function renderSoLineAttrs(pr) {
   `;
 }
 
+function renderDocItem(doc, scope, ownerId) {
+  return `
+    <div class="doc-item" data-doc-id="${escapeHtml(doc.id)}">
+      <div class="doc-icon">${ico('i-doc','ico-sm')}</div>
+      <div class="doc-info">
+        <div class="doc-name" title="${escapeHtml(doc.name)}">${escapeHtml(doc.name)}</div>
+        <div class="doc-meta">
+          <span class="pill pill-gray">${escapeHtml(doc.category || 'Other')}</span>
+          <span>${fmtBytes(doc.size)}</span>
+          <span class="sep">·</span>
+          <span>${escapeHtml(doc.uploadedBy)}</span>
+          <span class="sep">·</span>
+          <span>${escapeHtml(doc.uploadedAt)}</span>
+        </div>
+      </div>
+      <div class="doc-actions">
+        <button class="btn btn-tertiary btn-sm" data-doc-action="download" data-doc-scope="${scope}" data-doc-owner="${escapeHtml(ownerId)}" data-doc-id="${escapeHtml(doc.id)}" title="Download">${ico('i-download','ico-sm')}</button>
+        <button class="btn btn-tertiary btn-sm" data-doc-action="remove" data-doc-scope="${scope}" data-doc-owner="${escapeHtml(ownerId)}" data-doc-id="${escapeHtml(doc.id)}" title="Remove">${ico('i-trash','ico-sm')}</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderDocumentsCard(opts) {
+  // opts: { scope: 'line'|'parent', ownerId, title, subtitle, docs }
+  const { scope, ownerId, title, subtitle, docs } = opts;
+  const itemsHtml = docs.length
+    ? `<div class="doc-list">${docs.map(d => renderDocItem(d, scope, ownerId)).join('')}</div>`
+    : `<div class="doc-empty">
+         <div class="doc-empty-icon">${ico('i-paperclip')}</div>
+         <div>No documents attached yet.</div>
+         <div class="text-xs mt-1">Upload customer POs, drawings, specs, certifications, etc.</div>
+       </div>`;
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span>${escapeHtml(title)} <span class="text-muted" style="font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 11px;">${docs.length} attached${subtitle ? ' · ' + subtitle : ''}</span></span>
+        <button class="btn btn-secondary btn-sm" data-action="open-doc-upload" data-doc-scope="${scope}" data-doc-owner="${escapeHtml(ownerId)}">${ico('i-upload','ico-sm')} Upload</button>
+      </div>
+      <div class="p-4">${itemsHtml}</div>
+    </div>
+  `;
+}
+
+function renderLineDocumentsCard(pr) {
+  return renderDocumentsCard({
+    scope: 'line',
+    ownerId: pr.id,
+    title: 'SO Line documents',
+    subtitle: `Scoped to ${pr.soLine}`,
+    docs: getLineDocs(pr.id),
+  });
+}
+
+function renderParentDocumentsCard(parentSoId) {
+  return renderDocumentsCard({
+    scope: 'parent',
+    ownerId: parentSoId,
+    title: 'Sales Order documents',
+    subtitle: `Applies to all lines on ${parentSoId}`,
+    docs: getParentDocs(parentSoId),
+  });
+}
+
 function renderPersonaWorkspace(pr, p, editable) {
   if (p.isManager) return renderManagerWorkspace(pr);
   if (pr.currentStage === 0) {
@@ -1277,6 +1403,7 @@ function renderCsWorkspace(pr, editable) {
   const cs = pr.cs || { fai: false, cui: false, si: false, bidReview: false, status: 'Open' };
   const dis = editable ? '' : 'disabled';
   const lock = !editable;
+  const curPriority = pr.priority || 'Med';
   const checkRow = (key, label) => `
     <label class="checkbox">
       <input type="checkbox" data-cs="${key}" ${cs[key] ? 'checked' : ''} ${dis} />
@@ -1295,6 +1422,12 @@ function renderCsWorkspace(pr, editable) {
         </div>
       </div>
       <div>
+        <div class="field mb-3">
+          <label class="req">Priority</label>
+          <select class="select" data-cs-priority ${dis}>
+            ${PRIORITY_OPTIONS.map(o => `<option ${curPriority === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('')}
+          </select>
+        </div>
         <div class="field mb-3">
           <label class="req">Stage Status</label>
           <select class="select" data-cs="status" ${dis}>
@@ -1400,7 +1533,7 @@ function renderAeaWorkspace(pr, editable) {
       </div>
       <div class="space-y-3">
         <div class="text-xs font-semibold mb-1" style="text-transform: uppercase; letter-spacing: 0.04em; color: var(--neutral-500);">Approval sign-off</div>
-        <div class="field-readonly" style="padding: 12px;">
+        <div class="note">
           <div class="text-sm">Your name and timestamp will be stored as approval evidence on confirm. Stage data becomes immutable once you approve.</div>
         </div>
         <div class="field">
@@ -1543,6 +1676,7 @@ function renderActionsBar(pr, p, editable) {
         <div class="card">
           <div class="card-header">Workflow actions</div>
           <div class="p-4 flex flex-wrap gap-2 justify-end">
+            <button class="btn btn-secondary" data-action="save">${ico('i-check','ico-sm')} Save</button>
             <button class="btn btn-secondary" data-action="add-note">${ico('i-msg','ico-sm')} Add note</button>
             <button class="btn btn-secondary" data-action="hold">${ico('i-pause','ico-sm')} Hold</button>
             <button class="btn btn-warning" data-action="escalate">${ico('i-warn','ico-sm')} Escalate</button>
@@ -1714,7 +1848,10 @@ function bindProjectEvents() {
   });
 
   document.querySelectorAll('[data-action]').forEach(btn => {
-    btn.addEventListener('click', () => handleAction(btn.dataset.action));
+    btn.addEventListener('click', () => handleAction(btn.dataset.action, btn));
+  });
+  document.querySelectorAll('[data-doc-action]').forEach(btn => {
+    btn.addEventListener('click', () => handleDocAction(btn));
   });
   const noteSend = document.getElementById('note-send');
   if (noteSend) noteSend.addEventListener('click', () => {
@@ -1730,13 +1867,33 @@ function bindProjectEvents() {
 //============================================================
 // ACTIONS
 //============================================================
-function handleAction(act) {
+function handleAction(act, el) {
   const pr = project();
+  if (act === 'open-doc-upload') {
+    const scope = el?.dataset.docScope;
+    const ownerId = el?.dataset.docOwner;
+    if (!scope || !ownerId) return;
+    openModal({ type: 'doc-upload', docScope: scope, docOwner: ownerId });
+    return;
+  }
   if (!pr) return;
   switch (act) {
-    case 'save':
-      toast('Changes saved. Stage Visit remains open.');
+    case 'save': {
+      const priorityEl = document.querySelector('[data-cs-priority]');
+      let priorityChanged = false;
+      if (priorityEl && persona().stageKey === 'CS') {
+        const newPriority = priorityEl.value;
+        if (newPriority && newPriority !== pr.priority) {
+          const from = pr.priority || '—';
+          pr.priority = newPriority;
+          pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Priority changed from ${from} to ${newPriority}.` });
+          priorityChanged = true;
+        }
+      }
+      renderMain();
+      toast(priorityChanged ? 'Changes saved · priority updated.' : 'Changes saved. Stage Visit remains open.');
       break;
+    }
     case 'add-note':
       document.getElementById('note-input')?.focus();
       break;
@@ -1768,6 +1925,31 @@ function handleAction(act) {
   }
 }
 
+function handleDocAction(el) {
+  const action = el.dataset.docAction;
+  const scope = el.dataset.docScope;
+  const ownerId = el.dataset.docOwner;
+  const docId = el.dataset.docId;
+  const list = scope === 'parent' ? getParentDocs(ownerId) : getLineDocs(ownerId);
+  const doc = list.find(d => d.id === docId);
+  if (!doc) return;
+  if (action === 'download') {
+    toast(`Downloading "${doc.name}" (mock).`);
+    return;
+  }
+  if (action === 'remove') {
+    if (!confirm(`Remove "${doc.name}"? This cannot be undone in the prototype.`)) return;
+    const idx = list.findIndex(d => d.id === docId);
+    if (idx >= 0) list.splice(idx, 1);
+    const pr = project();
+    if (pr && scope === 'line') {
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Removed line document "${doc.name}".` });
+    }
+    renderMain();
+    toast(`Removed "${doc.name}".`);
+  }
+}
+
 //============================================================
 // MODALS
 //============================================================
@@ -1793,6 +1975,7 @@ function renderModal() {
   else if (m.type === 'reject') html = renderRejectModal(m);
   else if (m.type === 'audit') html = renderAuditModal(m);
   else if (m.type === 'reassign') html = renderReassignModal(m);
+  else if (m.type === 'doc-upload') html = renderDocUploadModal(m);
   $root.innerHTML = html;
   bindModalEvents();
 }
@@ -1815,6 +1998,16 @@ function bindModalEvents() {
       if (cb.checked && npsRadio) npsRadio.checked = true;
     });
   });
+  const docFileInput = document.getElementById('doc-upload-files');
+  const docPreview = document.getElementById('doc-upload-preview');
+  if (docFileInput && docPreview) {
+    docFileInput.addEventListener('change', () => {
+      const files = [...(docFileInput.files || [])];
+      docPreview.innerHTML = files.length === 0
+        ? ''
+        : files.map(f => `<span class="doc-filechip">${ico('i-doc','ico-sm')} ${escapeHtml(f.name)} <span class="text-muted">(${fmtBytes(f.size)})</span></span>`).join('');
+    });
+  }
 }
 
 function handleModalConfirm(action) {
@@ -1826,6 +2019,10 @@ function handleModalConfirm(action) {
       if (!route) { toast('Pick a route.'); return; }
       const associateCb = document.getElementById('associate-existing-nps');
       const associateTo = (route === 'NPS' && associateCb?.checked) ? document.getElementById('existing-nps-select')?.value : null;
+      const priorityPick = document.getElementById('route-priority')?.value;
+      const priorityChanged = priorityPick && priorityPick !== pr.priority;
+      const priorityFrom = pr.priority;
+      if (priorityPick) pr.priority = priorityPick;
       pr.route = route;
       pr.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (17302 + Math.floor(Math.random() * 200));
       pr.associatedNpsId = associateTo || null;
@@ -1836,7 +2033,8 @@ function handleModalConfirm(action) {
       pr.visitHistory.push({ stage: 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
       pr.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
       const noteSuffix = associateTo ? ` Associated to existing NPS ${associateTo}.` : '';
-      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}` });
+      const prioritySuffix = priorityChanged ? ` Priority set to ${priorityPick} (was ${priorityFrom || '—'}).` : '';
+      pr.notes.push({ author: persona().name, ts: nowStamp(), text: `Routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}${prioritySuffix}` });
       closeModal();
       renderMain();
       toast(`Routed → ${route}. ${pr.npsId} created${associateTo ? ` (associated to ${associateTo})` : ''}.`);
@@ -1848,12 +2046,15 @@ function handleModalConfirm(action) {
       const note = document.getElementById('bulk-route-note')?.value?.trim();
       const associateCb = document.getElementById('associate-existing-nps-bulk');
       const associateTo = (route === 'NPS' && associateCb?.checked) ? document.getElementById('existing-nps-select-bulk')?.value : null;
+      const bulkPriority = document.getElementById('bulk-route-priority')?.value || '';
       const ids = [...state.selectedLineIds];
       let routedCount = 0;
       let nextSeq = 17500 + Math.floor(Math.random() * 200);
       ids.forEach(id => {
         const target = PROJECTS.find(p => p.id === id);
         if (!target || target.currentStage !== 0) return;
+        const priorityFrom = target.priority;
+        if (bulkPriority) target.priority = bulkPriority;
         target.route = route;
         target.npsId = (route === 'PPP' ? 'PPP-' : 'NPS-') + (nextSeq++);
         target.associatedNpsId = associateTo || null;
@@ -1864,13 +2065,14 @@ function handleModalConfirm(action) {
         target.visitHistory.push({ stage: 'CS', enteredAt: nowStamp(), exitedAt: nowStamp(), owner: persona().name, outcome: 'Complete' });
         target.visitHistory.push({ stage: route === 'PPP' ? 'PPP' : 'AE', enteredAt: nowStamp(), exitedAt: null, owner: null, outcome: null });
         const noteSuffix = associateTo ? ` Associated to existing NPS ${associateTo}.` : '';
-        target.notes.push({ author: persona().name, ts: nowStamp(), text: `Bulk-routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}${note ? ' Note: ' + note : ''}` });
+        const prioritySuffix = (bulkPriority && bulkPriority !== priorityFrom) ? ` Priority set to ${bulkPriority} (was ${priorityFrom || '—'}).` : '';
+        target.notes.push({ author: persona().name, ts: nowStamp(), text: `Bulk-routed via ${route} ${route === 'PPP' ? 'fast-path' : 'engineering path'}.${noteSuffix}${prioritySuffix}${note ? ' Note: ' + note : ''}` });
         routedCount++;
       });
       state.selectedLineIds.clear();
       closeModal();
       renderMain();
-      toast(`Routed ${routedCount} line${routedCount === 1 ? '' : 's'} → ${route}${associateTo ? ` (associated to ${associateTo})` : ''}.`);
+      toast(`Routed ${routedCount} line${routedCount === 1 ? '' : 's'} → ${route}${associateTo ? ` (associated to ${associateTo})` : ''}${bulkPriority ? ` · priority ${bulkPriority}` : ''}.`);
       return;
     }
     case 'hold': {
@@ -1949,6 +2151,28 @@ function handleModalConfirm(action) {
       toast(`Reassigned to ${newOwner}.`);
       return;
     }
+    case 'doc-upload': {
+      const fileInput = document.getElementById('doc-upload-files');
+      const files = [...(fileInput?.files || [])];
+      if (files.length === 0) { toast('Pick at least one file to upload.'); return; }
+      const category = document.getElementById('doc-upload-category')?.value || 'Other';
+      const note = document.getElementById('doc-upload-note')?.value?.trim();
+      const list = m.docScope === 'parent' ? getParentDocs(m.docOwner) : getLineDocs(m.docOwner);
+      const stamp = nowStamp();
+      const author = persona().name;
+      files.forEach(f => {
+        list.push({ id: newDocId(), name: f.name, size: f.size, category, uploadedBy: author, uploadedAt: stamp });
+      });
+      const cur = project();
+      if (cur && m.docScope === 'line' && cur.id === m.docOwner) {
+        const fileSummary = files.map(f => f.name).join(', ');
+        cur.notes.push({ author, ts: stamp, text: `Uploaded ${files.length} document${files.length === 1 ? '' : 's'} (${category}): ${fileSummary}.${note ? ' Note: ' + note : ''}` });
+      }
+      closeModal();
+      renderMain();
+      toast(`Uploaded ${files.length} document${files.length === 1 ? '' : 's'} to ${m.docScope === 'parent' ? 'Sales Order' : 'SO Line'}.`);
+      return;
+    }
     default:
       closeModal();
   }
@@ -1986,6 +2210,7 @@ function renderRouteModal(m) {
   const npsOptions = getActiveNpsOptions([pr.id]);
   const optionsHtml = npsOptions.map(o => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.label)}</option>`).join('');
   const hasOptions = npsOptions.length > 0;
+  const curPriority = pr.priority || DEFAULT_PRIORITY;
   return modalShell('Route — choose path', `
     <p class="text-sm text-muted mb-4">Choose how <strong class="text-strong">${escapeHtml(pr.soLine)}</strong> (${escapeHtml(pr.customer)}) should proceed. Closing this stage acts as your CS approval and is recorded in the audit log.</p>
     <div class="space-y-2">
@@ -2010,7 +2235,13 @@ function renderRouteModal(m) {
         </div>
       </label>
     </div>
-    <div class="field mt-4"><label>Closing note (optional)</label><textarea id="route-note" class="textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea></div>
+    <div class="field mt-4">
+      <label class="req">Priority</label>
+      <select id="route-priority" class="select">
+        ${PRIORITY_OPTIONS.map(o => `<option ${curPriority === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field mt-3"><label>Closing note (optional)</label><textarea id="route-note" class="textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea></div>
   `, `
     <button class="btn btn-secondary" data-modal-close>Cancel</button>
     <button class="btn btn-primary" data-modal-confirm="route">${ico('i-arrow-right','ico-sm')} Confirm route</button>
@@ -2062,6 +2293,13 @@ function renderRouteBulkModal(m) {
       </label>
     </div>
     <div class="form-group field mt-4">
+      <label class="control-label">Priority (applied to all lines)</label>
+      <select id="bulk-route-priority" class="form-control select">
+        <option value="">— Keep individual values —</option>
+        ${PRIORITY_OPTIONS.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group field mt-3">
       <label class="control-label">Closing note (optional, applied to all lines)</label>
       <textarea id="bulk-route-note" class="form-control textarea" rows="2" placeholder="Why this route? Captured in audit history."></textarea>
     </div>
@@ -2081,6 +2319,36 @@ function renderRouteBulkModal(m) {
       </div>
     </div>
   `;
+}
+
+function renderDocUploadModal(m) {
+  const scopeLabel = m.docScope === 'parent'
+    ? `Sales Order ${m.docOwner}`
+    : `SO Line ${PROJECTS.find(p => p.id === m.docOwner)?.soLine || m.docOwner}`;
+  const scopeHint = m.docScope === 'parent'
+    ? 'These documents apply to the entire sales order and are visible from any line.'
+    : 'These documents are scoped to this individual SO line.';
+  return modalShell(`Upload documents — ${scopeLabel}`, `
+    <p class="text-sm text-muted mb-3">${escapeHtml(scopeHint)}</p>
+    <div class="field mb-3">
+      <label class="req">Files</label>
+      <input id="doc-upload-files" class="input" type="file" multiple />
+      <div id="doc-upload-preview" class="mt-2"></div>
+    </div>
+    <div class="field mb-3">
+      <label class="req">Category</label>
+      <select id="doc-upload-category" class="select">
+        ${DOC_CATEGORIES.map(c => `<option ${c === 'Other' ? 'selected' : ''}>${escapeHtml(c)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field">
+      <label>Note (optional, added to audit thread)</label>
+      <textarea id="doc-upload-note" class="textarea" rows="2" placeholder="e.g., updated rev B per customer change request"></textarea>
+    </div>
+  `, `
+    <button class="btn btn-secondary" data-modal-close>Cancel</button>
+    <button class="btn btn-primary" data-modal-confirm="doc-upload">${ico('i-upload','ico-sm')} Upload</button>
+  `);
 }
 
 function renderHoldModal(m) {
